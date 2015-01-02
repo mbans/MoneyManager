@@ -14,8 +14,8 @@ public interface AccountService {
 			 String bank, 
 			 String accountNum, 
 			 String sortCode,
-			 Set<String> cardNumbers,
-			 Set<TransactionHeading> headings);
+			 String sampleTransaction,
+			 List<String> headings);
 	
 	public Key<Account> saveAccount(Account account);
 	
@@ -25,5 +25,5 @@ public interface AccountService {
 	 * @return
 	 */
 	public Set<Account> getAccounts(String username);
-	
+		
 }

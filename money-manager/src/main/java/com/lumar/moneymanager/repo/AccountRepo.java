@@ -7,7 +7,8 @@ import com.lumar.moneymanager.domain.Account;
  
 public interface AccountRepo {
 	
-	public Key<Account> saveAccount(Account account);
-
 	public Set<Account> getAccountsByUsername(String username);
+
+	public Key<Account> saveAccount(Account account);
+	
 }

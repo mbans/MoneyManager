@@ -14,7 +14,7 @@ app.service('transactionService', function() {
 		  			     {name: "Transaction Amount", mandatory:"false"},
 		  			     {name: "Transaction Credit",mandatory:"false"},
 		  			     {name: "Transaction Debit",mandatory:"false"},
-		  			     {name:  "Transaction Type",mandatory:"true"},
+		  			     {name: "Transaction Type",mandatory:"true"},
 		  		         {name: "Running Balance", mandatory:"true"},
 		  		         {name: "N/A", mandatory:"false"}
 		  			    ];
@@ -41,11 +41,11 @@ app.service('transactionService', function() {
 	     ,
 		 transactions :
 				[
-				 {date: "01 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , TED BAKER , GLASGOW GB", incoming:"-", outgoing:"50.00", balance:"£2,540.86", category:"shopping"},
-				 {date: "01 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , Tesco, GLASGOW GB", incoming:"-", outgoing:"100.00", balance:"£2,540.86", category:"shopping"},
-		         {date: "03 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , TFL",incoming:"-",outgoing:"2:00",balance:"£2540.86", category:"travel"},
-		         {date: "04 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , Mortgage",incoming:"-",outgoing:"1000",balance:"£2540.86", category:"mortgage"},
-		         {date: "04 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , Salary",incoming:"679.00",outgoing:"-",balance:"£2540.86", category:"salary"}
+				 {date: "01 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , TED BAKER , GLASGOW GB", incoming:"-", outgoing:"50.00", balance:"ï¿½2,540.86", category:"shopping"},
+				 {date: "01 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , Tesco, GLASGOW GB", incoming:"-", outgoing:"100.00", balance:"ï¿½2,540.86", category:"shopping"},
+		         {date: "03 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , TFL",incoming:"-",outgoing:"2:00",balance:"ï¿½2540.86", category:"travel"},
+		         {date: "04 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , Mortgage",incoming:"-",outgoing:"1000",balance:"ï¿½2540.86", category:"mortgage"},
+		         {date: "04 Dec 2014", type: "POC", description:"POS	0643 20DEC14 , Salary",incoming:"679.00",outgoing:"-",balance:"ï¿½2540.86", category:"salary"}
 		         ]
 		},
 		

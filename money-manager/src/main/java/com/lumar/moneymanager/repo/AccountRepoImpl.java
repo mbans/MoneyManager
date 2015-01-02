@@ -1,7 +1,6 @@
 package com.lumar.moneymanager.repo;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -11,8 +10,11 @@ import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Key;
 import com.google.code.morphia.Morphia;
 import com.google.code.morphia.query.Query;
+import com.google.gson.Gson;
 import com.lumar.moneymanager.domain.Account;
+import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+import com.mongodb.util.JSON;
 
 public class AccountRepoImpl implements AccountRepo {
 
@@ -53,7 +55,7 @@ public class AccountRepoImpl implements AccountRepo {
 
 	public Set<Account> getAccountsByUsername(String username) {
 		Query<Account> query = ds.createQuery(Account.class);
-		query.criteria("accountOwnner").equal(username);
+		query.criteria("accountOwner").equal(username);
 		Set<Account> accounts = new HashSet<Account>(query.asList());
 		LOG.info("Retrieved ["+accounts.size()+"] accounts for "+username);
 		return accounts;

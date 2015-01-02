@@ -1,5 +1,6 @@
 package com.lumar.moneymanager.service;
 
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -7,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.code.morphia.Key;
 import com.lumar.moneymanager.domain.Account;
-import com.lumar.moneymanager.domain.TransactionHeading;
 import com.lumar.moneymanager.repo.AccountRepo;
 import com.lumar.moneymanager.repo.AccountRepoImpl;
 
@@ -41,8 +41,8 @@ public class AccountServiceImpl implements AccountService {
 								 String bank, 
 								 String accountNum, 
 								 String sortCode,
-								 Set<String> cardNumbers,
-								 Set<TransactionHeading> headings) {
+								 String sampleTransaction,
+								 List<String> headings) {
 		
 		//Validation - is the account already registered, validate Input
 		
@@ -53,8 +53,7 @@ public class AccountServiceImpl implements AccountService {
 		account.setBank(bank);
 		account.setAccountNum(accountNum);
 		account.setSortCode(sortCode);
-		account.setCardNumbers(cardNumbers);
-		account.setTransactionHeadings(headings);
+		account.setTransactionHeadingOrdering(headings);
 		return accountRepo.saveAccount(account);
 	}
 	

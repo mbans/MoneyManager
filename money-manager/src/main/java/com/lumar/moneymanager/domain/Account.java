@@ -1,10 +1,10 @@
 package com.lumar.moneymanager.domain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Property;
 
@@ -16,16 +16,14 @@ public class Account extends BaseEntity {
 	private String accountNum;
 	private String sortCode;
 	private String accountOwner; // the username for user
-
-	@Property("cardNumbers")
-	private Set<String> cardNumbers;
-
-	@Embedded
-	private Set<TransactionHeading> transactionHeadings;
-
+    private String sampleTransaction; 
+    private String transactionDelimeter; 
+    
+	//Ordered list of the transaction headings
+	private List<String> transactionHeadingOrdering;
+	
 	public Account() {
-		transactionHeadings = new HashSet<TransactionHeading>();
-		cardNumbers = new HashSet<String>();
+		transactionHeadingOrdering = new ArrayList<String>();
 	}
 
 	public String getBank() {
@@ -60,12 +58,12 @@ public class Account extends BaseEntity {
 		this.sortCode = sortCode;
 	}
 
-	public Set<TransactionHeading> getTranHeadings() {
-		return transactionHeadings;
+	public List<String> getTransactionHeadingOrdering() {
+		return transactionHeadingOrdering;
 	}
 
-	public void addTransactonHeading(TransactionHeading heading) {
-		transactionHeadings.add(heading);
+	public void addTransactionHeadingOrdering(String heading) {
+		transactionHeadingOrdering.add(heading);
 	}
 
 	public String getAccountOwner() {
@@ -75,28 +73,21 @@ public class Account extends BaseEntity {
 	public void setAccountOwner(String accountOwner) {
 		this.accountOwner = accountOwner;
 	}
-
-	public void addCardNumber(String cardNumber) {
-		cardNumbers.add(cardNumber);
-	}
-
-	public void removeCardNumber(String cardNumber) {
-		cardNumbers.remove(cardNumber);
-	}
-
-	public void setCardNumbers(Set<String> cardNumbers) {
-		if (cardNumbers != null) {
-			this.cardNumbers = cardNumbers;
-		}
-	}
 	
-	public void setTransactionHeadings(
-			Set<TransactionHeading> transactionHeadings) {
-		this.transactionHeadings = transactionHeadings;
+	public void setTransactionHeadingOrdering(List<String> transactionHeadings) {
+		this.transactionHeadingOrdering = transactionHeadings;
 	}
 	
 	@Override
 	public String toString() {
 		return "Account[name="+name+", user="+this.accountOwner+"]";
+	}
+	
+	public String getSampleTransaction() {
+		return sampleTransaction;
+	}
+	
+	public String getTransactionDelimeter() {
+		return transactionDelimeter;
 	}
 }

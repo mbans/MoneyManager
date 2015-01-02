@@ -7,8 +7,8 @@
 				<button type="button" class="btn btn-default btn-md"
 					ng-click="viewTransactions()">Add Acount</button>
 				<div>
-					Select Account: <select class="dropdown" ng-model="selectedAccount"
-						ng-options="account.details.name for account in accountDetails track by account.details.name" />
+					Select Account: 
+						<select class="dropdown" ng-model="account" ng-options="account.name for account in getUserAccounts()" />
 				</div>
 
 			</center>
@@ -23,11 +23,11 @@
 			<form name="accountForm" ng-submit="submitForm(accountForm.$valid)"
 				novalidate>
 				<div class="row form-group col-md-12"
-					ng-class="{ 'has-error' : accountForm.accountName.$invalid && !accountForm.accountName.$pristine}">
-					<label>Account Name</label> <input name="accountName" type="text"
-						class="form-control" ng-model="account.accountName" required>
+					ng-class="{ 'has-error' : accountForm.name.$invalid && !accountForm.name.$pristine}">
+					<label>Account Name</label> <input name="name" type="text"
+						class="form-control" ng-model="account.name" required>
 					<p
-						ng-show="accountForm.accountName.$invalid && !accountForm.accountName.$pristine"
+						ng-show="accountForm.name.$invalid && !accountForm.name.$pristine"
 						class="help-block">Account name is required.</p>
 				</div>
 
@@ -66,21 +66,14 @@
 
 				<div class="row form-group col-md-12"
 					ng-class="{'has-error': accountForm.sampleTransaction.$invalid &&  !accountForm.rawTransaction.$pristine}">
-					<label>Sample Transaction</label> <input type="text"
-						name="rawTransaction" class="form-control"
-						value="19 Dec 2014	POS	0643 18DEC14 C , TORTILLA , CANARY WHARF GB	-	11.70	£2,526.06"
-						ng-model="sampleTransaction" required>
-					<p
-						ng-show="accountForm.sampleTransaction.$invalid &&  !accountForm.sampleTransaction.$pristine"
+					<label>Sample Transaction</label> 
+					<input type="text" name="rawTransaction" class="form-control" ng-model="sampleTransaction" required>
+					<p ng-show="accountForm.sampleTransaction.$invalid && !accountForm.sampleTransaction.$pristine"
 						class="help-block">Suppy a sample Transaction</p>
 
 				</div>
+				
 
-				<div class="row" ng-hide>
-					
-				
-				
-				</div>
 
 
 				<!-- Transaction Headings -->
@@ -101,17 +94,23 @@
 							<select ng-model="account.transactionHeadingOrdering[$index]">
 								<option
 									ng-repeat="transactionHeading in transactionFieldHeadings">
-									{{transactionHeading.name}}</option>
+									{{transactionHeading.name.trim()}}</option>
 							</select>
 						</div>
 					</div>
 				</div>
+
+
+
 				<div class="row form-group col-md-12">
 					<center>
-						<!--  <button type="submit" class="btn btn-primary row" ng-disabled="accountForm.$invalid">Submit</button>-->
-						<button type="submit" class="btn btn-primary row">Submit</button>
+						 <button type="submit" class="btn btn-primary row" ng-disabled="accountForm.$invalid">Submit</button>
+						<!--  <button type="submit" class="btn btn-primary row">Submit</button>-->
 					</center>
 				</div>
+
+
+
 
 			</form>
 

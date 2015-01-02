@@ -1,7 +1,9 @@
 package com.lumar.moneymanager.integration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -27,6 +29,7 @@ public class AccountIntegrationTest {
 	private static Mongo mongo;
 	private static Morphia morphia;
 	private static Datastore ds;
+	private String SAMPLE_TRANSACTION="29 Dec 2014	POS	0643 28DEC14 , SAINSBURYS S/MKTS , LONDON GB	-	3.54	£518.31";
 	
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -68,25 +71,25 @@ public class AccountIntegrationTest {
 	
 	@Test
 	public void shouldCreateAccountViaService() {
-		Set<TransactionHeading> headings = new HashSet<TransactionHeading>();
-		headings.add(new TransactionHeading("date",java.util.Date.class, 0));
-		headings.add(new TransactionHeading("description",String.class, 1));
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "123456", null, headings);
+		List<String> headings = new ArrayList<String>();
+		headings.add("date");
+		headings.add("description");
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "123456", SAMPLE_TRANSACTION, headings);
 		
 		//Retrieve
 		Query<Account> query = ds.createQuery(Account.class);
-		query.criteria("accountOwnner").equal("martinbans");
+		query.criteria("accountOwner").equal("martinbans");
 		
 		Account acc = query.asList().get(0);
 		Assert.assertEquals(acc.getSortCode(), "123456");
-		Assert.assertEquals(acc.getTranHeadings().size()+"", 2+"");
+		Assert.assertEquals(acc.getTransactionHeadingOrdering().size()+"", 2+"");
 	}
 	
 	@Test
 	public void shouldGetAccountByUsername() {
 		//Given
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "123456", null, new HashSet<TransactionHeading>());
-		accountService.createAccount("martinbans", "Martin-Natwest", "RBS", "0012345678", "123456", null, new HashSet<TransactionHeading>());
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		accountService.createAccount("martinbans", "Martin-Natwest", "RBS", "0012345678", "123456", null, new ArrayList<String>());
 		
 		//When
 		Set<Account> accounts = accountService.getAccounts("martinbans");
