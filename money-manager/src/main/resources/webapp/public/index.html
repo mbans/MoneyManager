@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="money-manager">
+<head>
+	<!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/money-manager.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/ng-grid/ng-grid.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/ng-grid/plugins/ng-grid-flexible-height.js"></script>
+	<script src="bower_components/ng-grid/ng-grid-2.0.14.min.js"></script>
+	
+	<!-- Angular -->
+    <script src="js/money-manager.js"></script>
+    <!-- Services -->
+    <script src="js/controllers/transaction-controller.js"></script>
+    <script src="js/services/transaction-service.js"></script>
+	<!-- Controllers -->
+    <script src="js/services/account-service.js"></script>
+    <script src="js/controllers/account-controller.js"></script>
+    <script src="js/routing.js"></script>
+    
+</head>
+
+<body >
+	<div id="navContainer" class="container">
+		<span class="col-md-2"></span>
+		<div class="col-md-8">
+			<nav class="navbar navbar-default" style="background-color:lavender;">
+			  <div class="container-fluid">
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="#">Lumar Analysis</a>
+			    </div>
+			    <div>
+			      <ul class="nav navbar-nav">
+			        <li><a href="#accounts">Accounts</a></li>
+			        <li><a href="#transactions">Transactions</a></li>
+			        <li><a href="#analysis">Analysis</a></li>
+			      </ul>
+			     </div>
+		  		</div>
+			</nav>
+		</div>
+		<span class="col-md-2"></span>
+	</div>
+	
+	<div class="container">
+		<span class="col-md-2"></span>
+
+		<!-- ng-view required for routing -->
+		<div ng-view class="col-md-8"></div>
+		
+		<span class="col-md-2"></span>
+	</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<div class="container-fluid">
+
+	<div class="row row-buffer">
+		<span class="col-md-1"></span>
+		<div class="col-md-10">
+			<center>
+				<button type="button" class="btn btn-default btn-md"
+					ng-click="viewTransactions()">Add Acount</button>
+				<div>
+					Select Account: <select class="dropdown" ng-model="selectedAccount"
+						ng-options="account.details.name for account in accountDetails track by account.details.name" />
+				</div>
+
+			</center>
+		</div>
+		<span class="col-md-1"></span>
+	</div>
+
+	<div class="row row-buffer">
+		<div class="col-md-2"></div>
+
+		<div id="formContainer" class="row col-md-8">
+			<form name="accountForm" ng-submit="submitForm(accountForm.$valid)"
+				novalidate>
+				<div class="row form-group col-md-12"
+					ng-class="{ 'has-error' : accountForm.accountName.$invalid && !accountForm.accountName.$pristine}">
+					<label>Account Name</label> <input name="accountName" type="text"
+						class="form-control" ng-model="account.accountName" required>
+					<p
+						ng-show="accountForm.accountName.$invalid && !accountForm.accountName.$pristine"
+						class="help-block">Account name is required.</p>
+				</div>
+
+				<!-- Bank -->
+				<div class="row form-group col-md-12"
+					ng-class="{'has-error': accountForm.bank.$invalid && !accountForm.bank.$pristine}">
+					<label>Bank</label> <input type="text" name="bank"
+						class="form-control" ng-model="account.bank" required>
+					<p
+						ng-show="accountForm.bank.$invalid && !accountForm.bank.$pristine"
+						class="help-block">Bank is required.</p>
+				</div>
+
+				<!-- Account Num -->
+				<div class="row col-md-12">
+					<div class="form-group col-md-"
+						ng-class="{'has-error': accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine}">
+						<label>Account Number</label> <input type="number"
+							name="accountNum" class="form-control"
+							ng-model="account.accountNum" required>
+						<p
+							ng-show="accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine"
+							class="help-block">Account Number must be numbers only.</p>
+					</div>
+				</div>
+
+				<!-- Sort Code -->
+				<div class="row form-group col-md-12"
+					ng-class="{'has-error': accountForm.sortCode.$invalid &&  !accountForm.sortCode.$pristine}">
+					<label>Sort Code</label> <input type="number" name="sortCode"
+						class="form-control" ng-model="account.sortCode" required>
+					<p
+						ng-show="accountForm.sortCode.$invalid &&  !accountForm.sortCode.$pristine"
+						class="help-block">Sort Code must be numbers only.</p>
+				</div>
+
+				<div class="row form-group col-md-12"
+					ng-class="{'has-error': accountForm.sampleTransaction.$invalid &&  !accountForm.rawTransaction.$pristine}">
+					<label>Sample Transaction</label> <input type="text"
+						name="rawTransaction" class="form-control"
+						value="19 Dec 2014	POS	0643 18DEC14 C , TORTILLA , CANARY WHARF GB	-	11.70	£2,526.06"
+						ng-model="sampleTransaction" required>
+					<p
+						ng-show="accountForm.sampleTransaction.$invalid &&  !accountForm.sampleTransaction.$pristine"
+						class="help-block">Suppy a sample Transaction</p>
+
+				</div>
+
+				<div class="row" ng-hide>
+					
+				
+				
+				</div>
+
+
+				<!-- Transaction Headings -->
+				<div
+					ng-hide="sampleTransaction=='' || sampleTransaction=='undefined'"
+					class="row form-group col-md-12">
+
+					<div class="row"
+						ng-repeat="sampleTranEntry in sampleTransactionEntries">
+						<div class="col-md-5">
+							<label>{{getSmallVersion(sampleTranEntry)}}</label>
+						</div>
+						<div class="col-md-3">
+							<label> maps to </label>
+						</div>
+
+						<div class="row col-md-3">
+							<select ng-model="account.transactionHeadingOrdering[$index]">
+								<option
+									ng-repeat="transactionHeading in transactionFieldHeadings">
+									{{transactionHeading.name}}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row form-group col-md-12">
+					<center>
+						<!--  <button type="submit" class="btn btn-primary row" ng-disabled="accountForm.$invalid">Submit</button>-->
+						<button type="submit" class="btn btn-primary row">Submit</button>
+					</center>
+				</div>
+
+			</form>
+
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+</div>

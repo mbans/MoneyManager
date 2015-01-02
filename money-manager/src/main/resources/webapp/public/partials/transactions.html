@@ -1,0 +1,107 @@
+<div class="container-fluid">
+
+		<!--  Drop down for selecting account -->
+ 		<div class="row row-buffer">
+			<span class="col-md-1"></span>
+				<center>
+				<div class="center col-md-10">
+					Select Account:
+				    <select class="dropdown" ng-model="selectedAccount" ng-options="account.details.name for account in accountDetails track by account.details.name"/>
+				</div>
+				</center>
+ 			<span class="col-md-1"></span>
+	     </div>  
+		
+		<!-- View and Upload Transactions -->	
+		<div class="row">
+			<center>
+			<div id="transButtons" class="btn-group">
+			  <button type="button" class="btn btn-default btn-md" ng-click="viewTransactions()">View Transactions</button>
+			  <button type="button" class="btn btn-default btn-md" ng-click="viewTransUploadArea()">Upload Transactions</button>
+			</div>
+			</center>
+		</div>
+		
+		<!-- View Transactions -->		
+		<div id="transactionGridDiv" class="row-fluid row-buffer col-md-12" 
+			 ng-if="selectedTransactions.length>0 && viewTrans">		
+			<div ng-grid="gridOptions"/>
+		</div>
+	
+		<!-- Upload Transaction Area -->
+ 		<div class="row row-buffer" ng-if="viewTransactionUpload">
+			<div id="transactionText" class="col-md-12 row">
+				<textarea placeholder="Enter tabulated Transaction Data"
+						  ng-model="$parent.rawTransactions" />
+			</div>
+
+			<div id="uploadButton" class="row-buffer col-md-12 row">
+			  <center>
+				  <button type="button" 
+				  		  ng-disabled="uploadBoxEmpty()"
+				  		  class="btn btn-default btn-md" 
+				  		  ng-click="uploadTransactions()">Upload Transactions</button>
+			  </center>
+			</div>
+		</div>
+
+
+
+		
+<!-- 		<div class="row row-buffer" >
+			<span class="col-md-4"></span>
+			<button class="button-buffer col-md-2 btn btn-default dropdown-toggle" type="button" aria-expanded="true">View Transactions</button>
+			<button class="button-buffer col-md-2 btn btn-default dropdown-toggle" type="button" aria-expanded="true">Upload Transactions</button>
+			<span class="col-md-4"></span>
+		</div>
+		
+ -->
+<!-- 		<div class="row row-buffer">
+			<span class="col-md-5"></span> 
+			<span class="col-md-1">
+				<button title="Validate data" class="btn btn-default btn-md" ng-click="validateContent()" ng-enabled="uploadBoxPopulated()">
+					<span class="glyphicon glyphicon-ok"></span>
+				</button></span> 
+				
+				<div class="col-md-1">
+				<button title="Clear content"class="btn btn-default btn-md" ng-click="clear()">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+				</div> 
+				
+				Dead space
+				<div class="col-md-5"></div>
+		</div>
+		
+	</div>
+ -->
+	<!--
+	After paste, scope variable specified by ng-model will contain raw pasted text
+	Scope variable specified by ng-array will contain an array of arrays of the
+	tabular data
+-->
+
+	<!-- 	<angular-paste ng-model="rawPaste" ng-array="parsedPaste"/>
+
+	<table class="table table-bordered table-striped"
+		data-toggle="collapse" data-cache="false" data-height="299">
+		<thead ng-show="parsedPaste.length != 0">
+			<tr>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Description</th>
+				<th>Incoming</th>
+				<th>Outgoing</th>
+				<th>Running Balance</th>
+			<tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in parsedPaste">
+				<td ng-repeat="col in row">{{col}}</td>
+			</tr>
+			<tr ng-show="parsedPaste.length==0">
+				<td>Paste data from excel onto this page using Ctrl + V</td>
+			</tr>
+		</tbody>
+	</table> -->
+</div>
