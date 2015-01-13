@@ -10,5 +10,7 @@ public interface AccountRepo {
 	public Set<Account> getAccountsByUsername(String username);
 
 	public Key<Account> saveAccount(Account account);
+
+	public Account getAccountByAccountName(String accountName);
 	
 }

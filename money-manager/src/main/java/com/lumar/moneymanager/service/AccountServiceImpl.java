@@ -30,6 +30,10 @@ public class AccountServiceImpl implements AccountService {
 		}
 	}
 	
+	public Account getAccountByAccountName(String accountName) {
+		return accountRepo.getAccountByAccountName(accountName);
+	}
+	
 	public Key<Account> saveAccount(Account account) {
 		Key<Account> savedAccount = accountRepo.saveAccount(account);
 		LOG.info("Saved Account [{}]",savedAccount);

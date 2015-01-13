@@ -16,52 +16,46 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.util.JSON;
 
-public class AccountRepoImpl implements AccountRepo {
+public class AccountRepoImpl extends AbstractRepo implements AccountRepo  {
 
 	private Logger LOG = LoggerFactory.getLogger(AccountRepoImpl.class);
-
-	// TODO: Pass in as properties;
-	private static String databaseName = "money-manager";
-	private String dbHost = "";
-	private String dbPort = "";
-
-	private Morphia morphia;
-	private Mongo mongo;
-	private Datastore ds;
-
+	
 	public AccountRepoImpl() {
-		this(databaseName);
+		super();
 	}
-
+	
 	public AccountRepoImpl(String databaseName) {
-		try {
-			this.databaseName = databaseName;
-			this.morphia = new Morphia();
-			this.mongo = new Mongo();
-			morphia.mapPackage("com.lumar.moneymanager.domain");
-			ds = morphia.createDatastore(databaseName);
-			LOG.info("Created Morphia DataSource for MongoDb database["
-					+ databaseName + "]");
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"Exception instantiating Morphia instance for ["
-							+ databaseName + "]");
-		}
+		super(databaseName);
 	}
-
+	
 	public Key<Account> saveAccount(Account account) {
-		return ds.save(account);
+		return getDs().save(account);
 	}
 
 	public Set<Account> getAccountsByUsername(String username) {
-		Query<Account> query = ds.createQuery(Account.class);
+		LOG.info("Retrieving Accounts for [{}]", username);
+		Query<Account> query = getDs().createQuery(Account.class);
 		query.criteria("accountOwner").equal(username);
 		Set<Account> accounts = new HashSet<Account>(query.asList());
 		LOG.info("Retrieved ["+accounts.size()+"] accounts for "+username);
 		return accounts;
 	}
 	
-	public void setDatabaseName(String databaseName) {
-		this.databaseName = databaseName;
+	@Override
+	public Account getAccountByAccountName(String accountName) {
+		Query<Account> query = getDs().createQuery(Account.class);
+		query.criteria("name").equal(accountName);
+		Set<Account> accounts = new HashSet<Account>(query.asList());
+		
+		if(accounts.size() == 0) {
+			LOG.info("No account with Account Name [{}]",accountName);
+			return null;
+		}
+		else if(accounts.size() == 1) {
+			return accounts.iterator().next();
+		}
+		else {
+			throw new RuntimeException("There are multiple accounts with same name ["+accountName+"] dont know which one to retrieve");
+		}
 	}
 }

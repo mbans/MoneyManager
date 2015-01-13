@@ -98,6 +98,13 @@ public class AccountIntegrationTest {
 		Assert.assertTrue(accounts.size()==2);
 	}
 	
+	@Test
+	public void shouldGetAccountByAccountName() {
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		Account account = accountService.getAccountByAccountName("Martin-RBS");
+		Assert.assertTrue("martinbans".equals(account.getAccountOwner()));
+	}
+	
 	@Test 
 	public void shouldCreateUser() {
 		//Create a new Account

@@ -6,11 +6,14 @@
 			<center>
 				<button type="button" class="btn btn-default btn-md"
 					ng-click="viewTransactions()">Add Acount</button>
-				<div>
-					Select Account: 
-						<select class="dropdown" ng-model="account" ng-options="account.name for account in getUserAccounts()" />
+				<div ng-show="userAccounts.length > 0">
+					Select Account: <select class="dropdown" ng-model="selectedAccount" ng-options="acc.name for acc in userAccounts track by account.name"/>
 				</div>
-
+				<div ng-show="userAccounts.length == 0">
+					No accounts registered.
+				</div>
+				
+				
 			</center>
 		</div>
 		<span class="col-md-1"></span>

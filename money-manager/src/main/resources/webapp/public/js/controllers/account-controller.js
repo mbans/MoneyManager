@@ -2,27 +2,40 @@ var module = angular.module('money-manager');
 
 //Add the 'PasteController' as a 
 module.controller('accountController',  function ($scope, accountService, transactionService) {
-	$scope.user="martin"
-	$scope.userAccounts=[];
 	
+	//Currently signed in user
+	$scope.user=configuration.user;
+	
+	$scope.selectedAccount={};
+	$scope.userAccounts={};
 	$scope.accountService=accountService;
 	$scope.transactionServie=transactionService;
 	$scope.account={};
+
 	$scope.account.transactionHeadingOrdering=[];
-	
 	$scope.account.accountOwner="martin";
 	$scope.account.bank="RBS";
 	$scope.account.name="Martin-RBS";
 	$scope.account.accountNum=12345678;
 	$scope.account.sortCode=111111;
 	$scope.sampleTransaction="22-Dec-2012\tPOS\tTedBaker\t-\t12.00\t1212";
-
 	
 	//Retrieves user accounts for the current user
     $scope.getUserAccounts = function() {
-		$scope.userAccounts=$scope.accountService.getUserAccounts($scope.user);
+    	console.log("In cotroller.getUserAccounts()");
+		var userAccountsPromise=$scope.accountService.getUserAccounts($scope.user);
+		userAccountsPromise.then(
+			function(accounts) {
+				console.log("Returned "+accounts.length + " for user "+$scope.user);
+				$scope.userAccounts=accounts;
+				console.log("Asssigned $scope.userAccounts =" + $scope.userAccounts);
+			},
+			function(errorMessage) {
+				console.log("Error retrieving Accounts for "+$scope.user + " error="+errorMessage);
+			});
+    	}
+		
 //		console.log($scope.userAccounts.length+ " user accounts retrieved for "+$scope.user);
-    }
 	
     //Add a watcher to the 'sampleTransaction' and use it to populate the sampleTransactionEntries.
     //These are used to create the drop downs that user maps entries to.
@@ -51,6 +64,7 @@ module.controller('accountController',  function ($scope, accountService, transa
     	}
     	else {
     		$scope.accountService.saveAccount($scope.account);
+    		$scope.getUserAccounts();
     	}
     }
 
@@ -81,11 +95,9 @@ module.controller('accountController',  function ($scope, accountService, transa
     	return unpopulatedMandatoryFields;
     }
     
-    
 	//Constant
 	$scope.transactionFieldHeadings=transactionService.transactionFieldHeadings;
 	
 	//Get the user accounts on start-up
 	$scope.getUserAccounts();
-
 });

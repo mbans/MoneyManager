@@ -1,6 +1,6 @@
 var app = angular.module('money-manager');
 
-app.service('transactionService', function() {
+app.service('transactionService', function($http) {
 	
 	
 /*				
@@ -96,24 +96,28 @@ app.service('transactionService', function() {
 	}
 	
 	//Stubbed
-	this.getTransactions = function(accountId) {
-		console.log("Retrieving Transactions for AccountId["+accountId+"]");
-		toReturn=[];
-		if(accountId=="1") {
-			toReturn = this.accounts[0].transactions;
-		} 
-		else {
-			toReturn = this.accounts[1].transactions;
-		}
-		console.log("Returned ["+toReturn.length+"] transactions");
-		return toReturn;
+	this.getTransactions = function(account) {
+		console.log("Retrieving Transactions for AccountName["+account.name+"]");
+
+		accountName=account.name;
+		return $http.get(configuration.baseUrl+"/account/"+accountName
+							+"/transactions/")	
+					.then(
+						function(response) {
+							var transactions=response.data;
+							console.log("Retrived " + transactions.length + " transactions for "+ accountName);
+							return "";
+						},
+						function(httpError) {
+							console.log("Error Retrieving accounts...");
+						});
 	}
 	
-	//For a given user get all account details
-	this.getAccountsAndTransactions = function(user) {
-		console.log("Retrieving account details for User["+user+"]");
-		return this.accounts;
-	}
+//	//For a given user get all account details
+//	this.getAccountsAndTransactions = function(user) {
+//		console.log("Retrieving account details for User["+user+"]");
+//		return this.accounts;
+//	}
 	
 	//Returns the entire account
 	this.getAccountById = function(accountId) {

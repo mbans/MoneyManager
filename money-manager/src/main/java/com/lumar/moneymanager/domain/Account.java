@@ -17,11 +17,11 @@ public class Account extends BaseEntity {
 	private String sortCode;
 	private String accountOwner; // the username for user
     private String sampleTransaction; 
-    private String transactionDelimeter; 
     
-	//Ordered list of the transaction headings
+	//Related to the parsing of the account - maybe stored in seperate object?
 	private List<String> transactionHeadingOrdering;
-	
+    private String transactionDelimeter; 
+		
 	public Account() {
 		transactionHeadingOrdering = new ArrayList<String>();
 	}
@@ -88,6 +88,7 @@ public class Account extends BaseEntity {
 	}
 	
 	public String getTransactionDelimeter() {
-		return transactionDelimeter;
+//		return transactionDelimeter;
+		return "\t"; //Always a tab for now!
 	}
 }

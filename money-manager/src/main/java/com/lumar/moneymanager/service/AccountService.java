@@ -25,5 +25,11 @@ public interface AccountService {
 	 * @return
 	 */
 	public Set<Account> getAccounts(String username);
-		
+	
+	/**
+	 * Retrieves an account by account name
+	 * @param accountName
+	 * @return
+	 */
+	public Account getAccountByAccountName(String accountName);
 }

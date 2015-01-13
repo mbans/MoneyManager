@@ -3,30 +3,41 @@ package com.lumar.moneymanager.domain;
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class TransactionHeading {
+public class TransactionHeading<T> {
 	
 	private String name;
-	private Class<?> type;
-	private Integer order;
+	private boolean mandatory;
+	private Class<T> c; 
 	
 	public TransactionHeading() {
 	}
 	
-	public TransactionHeading(String name, Class<?> c, Integer order) {
+	public TransactionHeading(String name, boolean mandatory, Class<T> c) {
 		this.name = name;
-		this.type = c;
-		this.order=order;
+		this.mandatory=mandatory;
+		this.c = c;
 	}
 	
 	public String getName() {
 		return name;
 	}
-
-	public Class<?> getType() {
-		return type;
+	
+	public boolean isMandatory() {
+		return mandatory;
 	}
 	
-	public Integer getOrder() {
-		return order;
+	public T getDefaultInstance() {
+		return new  TransactionHeading.GenericInstanceCreator<T>().createContent(c);
+	}
+	
+	private static class GenericInstanceCreator<U> {
+		public U createContent(Class<U> c) { 
+			try {
+				return c.newInstance();
+			}
+			catch(Exception e) {
+				throw new RuntimeException("cannot instantiate a default object for " + c.getName());
+			}
+		}
 	}
 }

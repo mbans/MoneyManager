@@ -6,7 +6,7 @@
 				<center>
 				<div class="center col-md-10">
 					Select Account:
-				    <select class="dropdown" ng-model="selectedAccount" ng-options="account.details.name for account in accountDetails track by account.details.name"/>
+				    <select class="dropdown" ng-model="selectedAccount" ng-options="account.name for account in userAccounts track by account.name"/>
 				</div>
 				</center>
  			<span class="col-md-1"></span>

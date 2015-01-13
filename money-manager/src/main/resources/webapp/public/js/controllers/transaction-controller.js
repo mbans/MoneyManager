@@ -3,17 +3,24 @@ var module = angular.module('money-manager');
 
 
 //Add the 'PasteController' as a 
-module.controller('transactionController',  function ($scope, transactionService) {
-    $scope.rawPaste = '';
+module.controller('transactionController',  function ($scope, transactionService, accountService) {
+	
+	//Currently signed in user
+	$scope.user=configuration.user;
+	
+	$scope.transactionService=transactionService;
+	$scope.accountService=accountService;
+    
+	$scope.rawPaste = '';
     $scope.parsedPaste = [];
     $scope.json="some Json";
     $scope.rawTransactions="";
     $scope.colDefs=[];
     $scope.selectedTransactions=[];
-    $scope.transactionService=transactionService;
-    $scope.accountDetails=[];
+    $scope.userAccounts=[];
     $scope.viewTrans=false;
     $scope.viewTransactionUpload=false;
+    $scope.selectedAccount={};
     
     // Grid ///////////////////////////////////////////////////////////////////
     $scope.gridOptions = {
@@ -45,16 +52,23 @@ module.controller('transactionController',  function ($scope, transactionService
     $scope.viewTransactions = function() {
     	$scope.viewTrans=true;
     	$scope.viewTransactionUpload=false;
-    	console.log("Loading Transactions for selectedAccount "+JSON.stringify($scope.selectedAccount.details));
-    	transactions = $scope.transactionService.getTransactions($scope.selectedAccount.details.id);
-    	$scope.selectedTransactions=transactions;
+    	console.log("Loading Transactions for Account "+JSON.stringify($scope.selectedAccount.name));
+    	transactionPromise = $scope.transactionService.getTransactions($scope.selectedAccount)
+    						 	.then(
+									function(transactions) {
+										console.log("Retrived " + transactions.length + " transactions for "+ accountName);
+										$scope.selectedTransactions=transactions;
+									},
+									function(httpError) {
+										console.log("Error Retrieving transactions for selectedTransactions");
+								});
     }
     
     //This 
     $scope.viewTransUploadArea = function() {
     	$scope.viewTrans=false;
     	$scope.viewTransactionUpload=true;
-    	transactions = $scope.transactionService.getTransactions($scope.selectedAccount.details.id);
+    	transactions = $scope.transactionService.getTransactions($scope.selectedAccount.id);
     	$scope.selectedTransactions=transactions;
     	//$scope.updateSelectedTransactions();
     }
@@ -72,10 +86,17 @@ module.controller('transactionController',  function ($scope, transactionService
     	
     }
     
-    //TODO takes a user id 
-    $scope.getAccountDetailsForDropdown = function() {
-    	$scope.accountDetails=$scope.transactionService.getAccountsForUser("");
-    	console.log("Retrieved accounts....");
+	//Retrieves user accounts for the current user
+    $scope.getUserAccounts = function() {
+    	console.log("In cotroller.getUserAccounts()");
+		var userAccountsPromise=$scope.accountService.getUserAccounts($scope.user);
+		userAccountsPromise.then(
+			function(accounts) {
+				$scope.userAccounts=accounts;
+			},
+			function(errorMessage) {
+				console.log("Error retrieving Accounts for "+$scope.user + " error="+errorMessage);
+			});
     }
     
     $scope.clear = function() {
@@ -120,10 +141,5 @@ module.controller('transactionController',  function ($scope, transactionService
     }
     
     //Initialise
-    $scope.getAccountDetailsForDropdown();
-    
-    //By default we select the first account for the user
-    $scope.selectedAccount=$scope.transactionService.getAccountsForUser("")[0];
-    
-    console.log("AccountDetails = "+$scope.accountDetails);
+    $scope.getUserAccounts();
 });

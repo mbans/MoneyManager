@@ -1,4 +1,4 @@
-package com.lumar.moneymanager.services;
+package com.lumar.moneymanager.service;
 
 public class AccountServiceTest {
 
