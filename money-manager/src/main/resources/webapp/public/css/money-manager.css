@@ -1,7 +1,29 @@
-body { 
+/* body { 
 	padding-top:30px; 
 }
+ */
 
+
+ #banner {
+ 	padding-top:20px;
+ }
+ 
+ 
+ #navDiv {
+ 	padding-top:35px;
+ }
+
+
+#mainContent {
+ 	padding-top:35px;
+ 	
+ }
+
+ 
+ul.nav a:hover { color: #fff !important; }
+
+#userDiv
+ 
 .headerRow {
 	text-align: center;
 	vertical-align: middle;
@@ -33,3 +55,7 @@ textarea {
 	margin-left:3px;
 	margin-right:3px;
  }
+
+ 
+ ul.nav a:hover { color: #fff !important; }
+ 

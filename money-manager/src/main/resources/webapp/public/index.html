@@ -27,35 +27,44 @@
     
 </head>
 
-<body >
-	<div id="navContainer" class="container">
-		<span class="col-md-2"></span>
-		<div class="col-md-8">
-			<nav class="navbar navbar-default" style="background-color:lavender;">
-			  <div class="container-fluid">
-			    <div class="navbar-header">
-			      <a class="navbar-brand" href="#">Lumar Analysis</a>
-			    </div>
-			    <div>
-			      <ul class="nav navbar-nav">
-			        <li><a href="#accounts">Accounts</a></li>
-			        <li><a href="#transactions">Transactions</a></li>
-			        <li><a href="#analysis">Analysis</a></li>
-			      </ul>
-			     </div>
-		  		</div>
-			</nav>
-		</div>
-		<span class="col-md-2"></span>
-	</div>
-	
-	<div class="container">
-		<span class="col-md-2"></span>
 
-		<!-- ng-view required for routing -->
-			<div ng-view class="col-md-8"></div>
-		
-		<span class="col-md-2"></span>
+<body>
+	<div id="mainContainer" class="container-fluid">
+
+		<div id="banner" class="row">
+			<div class="col-md-offset-2 col-md-8">
+				<center>
+	<!-- 				<img src=/img/pound.png> <img src=/img/dollar.png> <img
+						src=/img/euro.png> <img src=/img/yen.png>
+	 -->				<h1>
+						WheresMyMoney.com
+						</h2>
+<!-- 						<img src=/img/yen.png> <img src=/img/euro.png> <img
+							src=/img/dollar.png> <img src=/img/pound.png>
+ -->				</center>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+
+		<!-- Navigation -->
+		<div id="navDiv" class="row-fluid">
+					<ul class="nav nav-tabs nav-justified">
+						<li role="presentation"><a href="#">Home</a></li>
+						<li role="presentation"><a href="#accounts">Accounts</a></li>
+						<li role="presentation"><a href="#transactions">Transactions</a></li>
+						<li role="presentation"><a href="#analysis">Analysis</a></li>
+						<li role="presentation"><a href="#rules">Rules</a></li>
+						<li role="presentation"><a href="#about">About</a></li>
+						<li role="presentation"><a href="#logout">Logout (USER)</a></li>
+					</ul>
+		</div>
+				
+		<!-- The partials -->
+		<div id="mainContent" class="row-fluid">
+			<span class="col-md-2"></span>
+				<div ng-view class="col-md-8"></div>
+			<span class="col-md-2"></span> 
+		</div>
 	</div>
 </body>
 </html>
