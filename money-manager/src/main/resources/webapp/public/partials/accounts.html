@@ -1,41 +1,23 @@
 <div class="container-fluid">
+	
+	<!-- View Details of Selected Account -->
+	<div class="row" ng-show="accountIsLoaded || newAccountChosen">
+		<div id="formContainer" class="row col-md-offset-4  col-md-4">
+			<form class="form-horizontal" name="accountForm"  role="form" novalidate>
 
-	<div class="row row-buffer">
-		<span class="col-md-1"></span>
-		<div class="col-md-10">
-			<center>
-				<button type="button" class="btn btn-default btn-md"
-					ng-click="viewTransactions()">Add Acount</button>
-				<div ng-show="userAccounts.length > 0">
-					Select Account: <select class="dropdown" ng-model="selectedAccount" ng-options="acc.name for acc in userAccounts track by account.name"/>
-				</div>
-				<div ng-show="userAccounts.length == 0">
-					No accounts registered.
-				</div>
-				
-				
-			</center>
-		</div>
-		<span class="col-md-1"></span>
-	</div>
-
-	<div class="row row-buffer">
-		<div class="col-md-2"></div>
-
-		<div id="formContainer" class="row col-md-8">
-			<form name="accountForm" ng-submit="submitForm(accountForm.$valid)"
-				novalidate>
-				<div class="row form-group col-md-12"
+				<!-- AccountName -->
+				<div class="form-group"
 					ng-class="{ 'has-error' : accountForm.name.$invalid && !accountForm.name.$pristine}">
-					<label>Account Name</label> <input name="name" type="text"
-						class="form-control" ng-model="account.name" required>
+					<label>Account Name</label> 
+					<input ng-if="newAccountChosen" name="name" type="text" class="form-control" ng-model="account.name"  required>
+					<input ng-if="accountIsLoaded" name="name" type="text" class="form-control" ng-model="account.name" readonly required>
 					<p
 						ng-show="accountForm.name.$invalid && !accountForm.name.$pristine"
 						class="help-block">Account name is required.</p>
 				</div>
 
 				<!-- Bank -->
-				<div class="row form-group col-md-12"
+				<div class="form-group"
 					ng-class="{'has-error': accountForm.bank.$invalid && !accountForm.bank.$pristine}">
 					<label>Bank</label> <input type="text" name="bank"
 						class="form-control" ng-model="account.bank" required>
@@ -45,47 +27,43 @@
 				</div>
 
 				<!-- Account Num -->
-				<div class="row col-md-12">
-					<div class="form-group col-md-"
-						ng-class="{'has-error': accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine}">
-						<label>Account Number</label> <input type="number"
-							name="accountNum" class="form-control"
-							ng-model="account.accountNum" required>
-						<p
-							ng-show="accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine"
-							class="help-block">Account Number must be numbers only.</p>
-					</div>
+				<div class="form-group"
+					ng-class="{'has-error': accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine}">
+					<label>Account Number</label> 
+					<input name="accountNum" class="form-control" ng-model="account.accountNum" required>
+					<p
+						ng-show="accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine"
+						class="help-block">Account Number must be numbers only.</p>
 				</div>
 
 				<!-- Sort Code -->
-				<div class="row form-group col-md-12"
+				<div class="form-group"
 					ng-class="{'has-error': accountForm.sortCode.$invalid &&  !accountForm.sortCode.$pristine}">
-					<label>Sort Code</label> <input type="number" name="sortCode"
+					<label>Sort Code</label> <input  name="sortCode"
 						class="form-control" ng-model="account.sortCode" required>
 					<p
 						ng-show="accountForm.sortCode.$invalid &&  !accountForm.sortCode.$pristine"
 						class="help-block">Sort Code must be numbers only.</p>
 				</div>
 
-				<div class="row form-group col-md-12"
+				<!-- Sample Transaction -->
+				<div class="form-group"
 					ng-class="{'has-error': accountForm.sampleTransaction.$invalid &&  !accountForm.rawTransaction.$pristine}">
-					<label>Sample Transaction</label> 
-					<input type="text" name="rawTransaction" class="form-control" ng-model="sampleTransaction" required>
-					<p ng-show="accountForm.sampleTransaction.$invalid && !accountForm.sampleTransaction.$pristine"
+					<label>Sample Transaction</label> <input type="text"
+						name="rawTransaction" class="form-control"
+						ng-model="account.sampleTransaction" required>
+					<p
+						ng-show="accountForm.sampleTransaction.$invalid && !accountForm.sampleTransaction.$pristine"
 						class="help-block">Suppy a sample Transaction</p>
 
 				</div>
-				
-
-
 
 				<!-- Transaction Headings -->
 				<div
-					ng-hide="sampleTransaction=='' || sampleTransaction=='undefined'"
-					class="row form-group col-md-12">
+					ng-hide="account.sampleTransaction=='' || account.sampleTransaction=='undefined'"
+					class="form-group">
 
-					<div class="row"
-						ng-repeat="sampleTranEntry in sampleTransactionEntries">
+					<div class="row" ng-repeat="sampleTranEntry in sampleTransactionEntries track by $index">
 						<div class="col-md-5">
 							<label>{{getSmallVersion(sampleTranEntry)}}</label>
 						</div>
@@ -94,30 +72,125 @@
 						</div>
 
 						<div class="row col-md-3">
+
 							<select ng-model="account.transactionHeadingOrdering[$index]">
-								<option
-									ng-repeat="transactionHeading in transactionFieldHeadings">
-									{{transactionHeading.name.trim()}}</option>
+								
+								<!-- We add the currently selected item -->
+ 								<option ng-if="account.transactionHeadingOrdering[$index] != '' || account.transactionHeadingOrdering[$index] != undefined" selected="selected">
+									{{account.transactionHeadingOrdering[$index]}}
+								</option>
+																	
+								<option ng-repeat="transactionHeading in transactionFieldHeadings">
+ 									{{transactionHeading.name.trim()}}
+								</option>
+								
 							</select>
 						</div>
 					</div>
 				</div>
 
-
-
 				<div class="row form-group col-md-12">
-					<center>
-						 <button type="submit" class="btn btn-primary row" ng-disabled="accountForm.$invalid">Submit</button>
-						<!--  <button type="submit" class="btn btn-primary row">Submit</button>-->
-					</center>
+						<div class="btn-group">
+						<button ng-click="addOrUpdateAccount(accountForm.$valid)" ng-if="newAccountChosen" type="submit" class="btn btn-primary" ng-disabled="accountForm.$invalid">Save</button>
+						<button ng-click="addOrUpdateAccount(accountForm.$valid)" ng-if="accountIsLoaded"  type="submit" class="btn btn-primary" ng-disabled="accountForm.$invalid">Update</button>
+						<button ng-click="cancelAddOrUpdate()" ng-if="accountIsLoaded || newAccountChosen" class="btn btn-primary row">Cancel</button>
+					</div>
 				</div>
-
-
-
-
 			</form>
-
 		</div>
-		<div class="col-md-2"></div>
 	</div>
+
+	<!-- Add New Account -->
+	<div class="row" ng-hide="newAccountChosen">
+		<button class="btn btn-primary btn-xs col-md-offset-5 col-md-2" type="button" title="Register a new account" ng-click="chosenToAddAccount()">
+				<center>Add New Account</center>
+	</div>
+
+	<!--  -->
+	<div ng-hide="userAccounts.length>0 || newAccountChosen" class="row row-buffer">
+		<center>
+			<h2>Yo!</h2>
+			<h3> You have no accounts registered, get adding and get saving :P</h3>
+		</center>
+	</div>
+
+	<!-- Registered accounts Accounts -->
+	<div ng-show="userAccounts.length>0" class="row row-buffer">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<b>Registered Accounts</b>
+			</div>
+
+			<div class="panel-body">
+				<p>Below are your registered accounts, you can delete or view
+					further details by clicking into the account</p>
+			</div>
+
+			<table class="table">
+				<thead>
+					<th>Account Name</th>
+					<th>Bank</th>
+					<th>Account Num</th>
+					<th>Sort Code</th>
+					<th>Details</th>
+					<th></th>
+				</thead>
+				<tbody>
+					<tr ng-repeat="account in userAccounts track by $index">
+						<td>{{account.name}}</td>
+						<td>{{account.bank}}</td>
+						<td>{{account.accountNum}}</td>
+						<td>{{account.sortCode}}</td>
+						<td><button type="button" class="btn btn-default btn-xs"
+								ng-click="loadAccount(account)">View</button>
+						<td><button type="button" class="btn btn-default btn-xs"
+								ng-click="deleteAccount(account)">Delete Account</button>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+
+
+
+
+	<!-- 
+	<div ng-show="userAccounts.length > 0">
+		Select Account: <select class="dropdown" ng-model="selectedAccount"
+			ng-options="acc.name for acc in userAccounts track by account.name" />
+	</div>
+ -->
+
+
+
 </div>
+
+
+
+
+
+
+
+
+
+<!-- 
+<div class="row row-buffer">
+	<span class="col-md-1"></span>
+	<div class="col-md-10">
+		<center>
+			<button type="button" class="btn btn-default btn-md"
+				ng-click="viewTransactions()">Add Acount</button>
+			<div ng-show="userAccounts.length > 0">
+				Select Account: <select class="dropdown" ng-model="selectedAccount"
+					ng-options="acc.name for acc in userAccounts track by account.name" />
+			</div>
+			<div ng-show="userAccounts.length == 0">No accounts registered.</div>
+
+
+		</center>
+	</div>
+	<span class="col-md-1"></span>
+</div>
+ -->

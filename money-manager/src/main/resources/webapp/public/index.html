@@ -49,21 +49,33 @@
 		<!-- Navigation -->
 		<div id="navDiv" class="row-fluid">
 					<ul class="nav nav-tabs nav-justified">
-						<li role="presentation"><a href="#">Home</a></li>
-						<li role="presentation"><a href="#accounts">Accounts</a></li>
-						<li role="presentation"><a href="#transactions">Transactions</a></li>
-						<li role="presentation"><a href="#analysis">Analysis</a></li>
-						<li role="presentation"><a href="#rules">Rules</a></li>
-						<li role="presentation"><a href="#about">About</a></li>
-						<li role="presentation"><a href="#logout">Logout (USER)</a></li>
+						<li role="presentation"><a href="#home">
+							<img src="/img/home-small.png">Home</a>
+						</li>
+						<li role="presentation"><a href="#accounts">
+							<img src="/img/account-icon-small.png">Accounts</a></li>
+						<li role="presentation"><a href="#transactions">
+							<img src="/img/transactions-small.png">Transactions</a>
+						</li>
+						<li role="presentation"><a href="#analysis">
+							<img src="/img/analysis-pie-chart-small.png">
+							Analysis</a>
+						</li>
+						<li role="presentation"><a href="#rules">
+							<img src="/img/rules-small.png">Rules</a>
+						</li>
+						<li role="presentation"><a href="#about">
+							<img src="/img/info-small.png">About</a></li>
+						<li role="presentation"><a href="#logout">
+							<img src="/img/logout-small.png">Logout (USER)</a></li>
 					</ul>
 		</div>
 				
 		<!-- The partials -->
 		<div id="mainContent" class="row-fluid">
-			<span class="col-md-2"></span>
-				<div ng-view class="col-md-8"></div>
-			<span class="col-md-2"></span> 
+			<span class="col-md-1"></span>
+				<div ng-view class="col-md-10"></div>
+			<span class="col-md-1"></span> 
 		</div>
 	</div>
 </body>

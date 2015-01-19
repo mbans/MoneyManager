@@ -49,7 +49,7 @@ public class TransactionGenerator {
 		Set<Transaction> toReturn = new HashSet<Transaction>(); 
 		
 		for(String transaction : transactions) {
-			String[] tran = transaction.split(account.getTransactionDelimeter());
+			String[] tran = transaction.split(account.getDelimiter());
 			toReturn.add(createTransaction(account.getName(), tran,headings));
 		}
 		return toReturn;

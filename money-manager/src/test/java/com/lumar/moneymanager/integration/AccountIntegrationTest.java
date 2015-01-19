@@ -50,6 +50,33 @@ public class AccountIntegrationTest {
 		ds.delete(ds.createQuery(User.class));
 	}
 	
+	
+	@Test
+	public void shouldDeleteAccount() {
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		Account account=accountService.getAccountByAccountName("Martin-RBS");
+		Assert.assertTrue(account != null);
+		
+		accountService.delete(account);
+		account=accountService.getAccountByAccountName("Martin-RBS");
+		Assert.assertTrue(account == null);
+	}
+	
+	@Test
+	public void shouldUpdateAccount() {
+		
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		Account account = accountService.getAccountByAccountName("Martin-RBS");
+		account.setBank("New Bank");
+		
+		//When
+		accountService.updateAccount(account);
+
+		//Then
+		Account updatedAccount=accountService.getAccountByAccountName("Martin-RBS");
+		Assert.assertEquals("New Bank", updatedAccount.getBank());
+	}
+	
 	@Test
 	public void shouldCreateTransaction() {
 		Transaction transaction = new Transaction("Acc1");

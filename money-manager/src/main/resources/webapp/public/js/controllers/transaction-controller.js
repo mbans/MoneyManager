@@ -4,6 +4,134 @@ var module = angular.module('money-manager');
 
 //Add the 'PasteController' as a 
 module.controller('transactionController',  function ($scope, transactionService, accountService) {
+
+    $scope.chosenToUpload=false;
+	$scope.chosenToView = false;
+	
+	$scope.accountName="";
+	$scope.transactionText = "";
+    $scope.delimiter="Tab";
+    $scope.uploadIsValid=false;
+    $scope.errors={};
+
+    $scope.transactionText="";
+    $scope.validTransactions=[];
+    $scope.invalidTransactions=[]; 
+    $scope.rawTransactionRows=[];
+    
+    $scope.headings=[];
+
+    $scope.uploadMessage="";
+    
+    $scope.transactionGrid = {
+        data: 'validTransactions',
+        plugins: [new ngGridFlexibleHeightPlugin()],
+        columnDefs:$scope.transactionHeadings
+    }
+    
+    //Add a watcher to the data, we will be continually re-evaluating if the user's transactions meet the basic validation rules
+    //1. Match the correct number of fields
+    //2. Date field is valid
+    //3. Monetary anounts are valid
+    $scope.$watch('transactionText', function() { 
+    	if($scope.transactionText==undefined || $scope.transactionText=="") {
+    		return;
+    	}
+    	$scope.applyVerificationRules();
+    });
+
+    /**
+     * User has chosen to upload transactions from view
+     */
+    $scope.uploadPending = function() {
+    	$scope.chosenToUpload = true;
+    	$scope.chosenToView = false;
+    }
+    
+    $scope.viewTransactions = function() {
+    	$scope.chosenToUpload = false;
+    	$scope.chosenToView = true;
+    }
+    
+    //Upload the valid transactions
+    $scope.upload = function() {
+        $scope.invalidTransactions=[];
+        $scope.validTransactions=[];
+        $scope.transactionsWithUnknownCategory=[];
+        $scope.transactionService.upload($scope.selectedAccount,$scope.validTransactions);
+    }
+    
+   /**
+    * Applies rules to the list of uploaded transactions, this allows real time feedback to the user on the transactions
+    * This is a much more user friendly appoach to manually clicking "Verify" then having to hit "Upload"
+    */ 
+    $scope.applyVerificationRules = function() {
+        $scope.rawTransactionRows=$scope.transactionText.split("\n");
+    	var verificationOutcome=$scope.transactionService.applyVerificationRules($scope.selectedAccount, $scope.rawTransactionRows);
+    	$scope.invalidTransactions = verificationOutcome.invalidTransactions;
+    	$scope.validTransactions = verificationOutcome.validTransactions;
+    	console.log("Finished applying transaction verification rules");
+    }
+    
+    
+    $scope.verify = function() {
+        //Initialise
+        $scope.invalidRawTransactions={};
+        $scope.validTransactions=[];
+        $scope.rawTransactionRows=[];
+
+        //The rows uploaded into the text area
+        $scope.rawTransactionRows=$scope.transactionText.split("\n");
+
+        if($scope.delimiter=="Tab") {
+            $scope.delimiter="\t";
+        }
+
+        $scope.headings=$scope.selectedAccount.transactionHeadingOrdering.slice();
+        
+        for(i=0; i< $scope.rawTransactionRows.length; i++) {
+            rawTransactionRow=$scope.rawTransactionRows[i];
+            transactionRow=rawTransactionRow.split($scope.delimiter)
+            
+            transactionRow.push(category);
+            fieldCount=transactionRow.length; //Number of fields on the transaction
+            
+            //Do we have matching number of fields to columns
+            if(fieldCount != ($scope.headings.length)) {
+                $scope.invalidTransactions.push(rawTransactionRow);
+            }
+            else {
+            	$scope.validTransactions.push(transactionRow);
+            }
+        }
+    }
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	//Currently signed in user
 	$scope.user=configuration.user;
@@ -48,7 +176,7 @@ module.controller('transactionController',  function ($scope, transactionService
     
     ///////////////////////////////////////////////////////////////////
     
-    //This 
+/*    //This 
     $scope.viewTransactions = function() {
     	$scope.viewTrans=true;
     	$scope.viewTransactionUpload=false;
@@ -63,7 +191,7 @@ module.controller('transactionController',  function ($scope, transactionService
 										console.log("Error Retrieving transactions for selectedTransactions");
 								});
     }
-    
+*/    
     //This 
     $scope.viewTransUploadArea = function() {
     	$scope.viewTrans=false;

@@ -1,34 +1,113 @@
 <div class="container-fluid">
 
-		<!--  Drop down for selecting account -->
- 		<div class="row row-buffer">
-			<span class="col-md-1"></span>
-				<center>
-				<div class="center col-md-10">
-					Select Account:
-				    <select class="dropdown" ng-model="selectedAccount" ng-options="account.name for account in userAccounts track by account.name"/>
-				</div>
-				</center>
- 			<span class="col-md-1"></span>
-	     </div>  
+<div class="row col-md-offset-2 col-xs-offset-2 col-md-8 col-xs-8">
 		
-		<!-- View and Upload Transactions -->	
-		<div class="row">
+	<!-- Select user account -->
+	<div class="row row-buffer">
+		<span class="col-md-1"></span>
+			<center>
+			<div class="center col-md-10">
+				Select Account:
+			    <select class="dropdown" ng-model="selectedAccount" ng-options="account.name for account in userAccounts track by account.name"/>
+			</div>
+			</center>
+			<span class="col-md-1"></span>
+     </div>  
+     
+	  <!-- Choose to upload or view transactions -->
+	  <div class="row">
 			<center>
 			<div id="transButtons" class="btn-group">
-			  <button type="button" class="btn btn-default btn-md" ng-click="viewTransactions()">View Transactions</button>
-			  <button type="button" class="btn btn-default btn-md" ng-click="viewTransUploadArea()">Upload Transactions</button>
+			  <button ng-disabled="selectedAccount.name == undefined"  type="button" class="btn btn-default btn-md" ng-click="viewTransactions()">View Transactions</button>
+			  <button ng-disabled="selectedAccount.name == undefined" type="button" class="btn btn-default btn-md" ng-click="uploadPending()">Upload Transactions</button>
 			</div>
 			</center>
 		</div>
+	
+	
+    <!-- Input -->
+    <div ng-show="chosenToView">
+    	Showing all user transactions
+    </div>
+        
+    <!-- Div for Uploading -->
+    <div ng-show="chosenToUpload" class="row">
+        <form name="transactionForm" novalidate>
+            <div class="form-horizontal">
+                <div class="form-group">
+
+						<!-- Display the expected upload format -->
+						<div class="row row-buffer alert alert-info" ng-show="chosenToUpload">
+					          <button type="button" class="close" data-dismiss="alert">&times;</button>
+							  <b>Expected transaction field delimiter = </b>{{selectedAccount.delimiter}}
+							  <br>
+							  <b>Expected transaction field format</b> 
+							  <br>
+							  	 <div class="col-md-2" ng-repeat="column in selectedAccount.transactionHeadingOrdering track by $index">{{column}}</div>
+							  <br>
+					    </div>
+
+					<!-- Success message -->
+			      <div class="row alert alert-success" ng-show="transactionText != undefined && validTransactions.length>0 && invalidTransactions.length==0">
+					  <!--<button type="button" class="close" data-dismiss="alert">&times;</button> -->
+			          <b>So far so good!!</b> {{validTransactions.length}} of {{rawTransactionRows.length }} of your transactions have passed validation.
+			          <br>Hit the Upload button when your ready!
+			      </div>
+					
+			      <!-- Error Message-->
+			      <div class="row alert alert-danger" ng-show="transactionText != undefined && invalidTransactions.length>0">
+			          <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+			          <b>Deary me!</b>
+			          You have some invalid transactions, please fix before uploading
+			          <ol>
+			              <li ng-repeat="invalidTran in invalidTransactions track by $index">
+			              	{{invalidTran.transaction}} - {{invalidTran.reason}}</li>
+			          </ol>
+			      </div>
+										
+                    <!-- Area for uploading transaction data-->
+                    <div ng-show="chosenToUpload" class="row">
+	                    <textarea  style="height:100px" ng-model="transactionText" class="form-control" type="text" placeholder="Paste Transactions" required></textarea>
+                     </div>
+                     
+                    <br>
+
+                    <!-- show the parsed transactions -->
+                    <div class="row panel panel-default" ng-show="validTransactions.length > 0 && invalidTransactions.length == 0">
+                        <div class="panel-heading">Transactions</div>
+                        <div class="panel-body">Below are your transactions</div>
+                        <table class="table">
+                            <thead>
+                             <th ng-repeat="heading in selectedAccount.transactionHeadingOrdering track by $index"">{{heading}}</th>
+                            </thead>
+                            <tbody>
+                               <tr ng-repeat="transaction in validTransactions track by $index">
+                                <td ng-repeat="value in transaction track by $index">
+									<div ng-if="headings[$index] != 'Category'">{{value}}</div>
+									<div ng-if="headings[$index] == 'Category'" contenteditable>{{value}}</div>
+                                </td>
+                               </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <center>                    
+	                    <button ng-disabled="invalidTransactions.length > 0 || validTransactions.length == 0"  class="btn btn-primary" ng-click=upload()>Upload</button>
+                    </center>
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+
+	</div>
+
+
 		
-		<!-- View Transactions -->		
 		<div id="transactionGridDiv" class="row-fluid row-buffer col-md-12" 
 			 ng-if="selectedTransactions.length>0 && viewTrans">		
 			<div ng-grid="gridOptions"/>
 		</div>
 	
-		<!-- Upload Transaction Area -->
  		<div class="row row-buffer" ng-if="viewTransactionUpload">
 			<div id="transactionText" class="col-md-12 row">
 				<textarea placeholder="Enter tabulated Transaction Data"

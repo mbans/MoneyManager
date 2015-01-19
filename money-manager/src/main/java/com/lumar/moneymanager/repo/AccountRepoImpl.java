@@ -10,6 +10,7 @@ import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Key;
 import com.google.code.morphia.Morphia;
 import com.google.code.morphia.query.Query;
+import com.google.code.morphia.query.UpdateOperations;
 import com.google.gson.Gson;
 import com.lumar.moneymanager.domain.Account;
 import com.mongodb.DBObject;
@@ -32,6 +33,19 @@ public class AccountRepoImpl extends AbstractRepo implements AccountRepo  {
 		return getDs().save(account);
 	}
 
+	public Key<Account> updateAccount(Account account) {
+		//Delete existing
+		getDs().delete(getAccountByAccountName(account.getName()));
+		
+		//Save new account
+		return saveAccount(account);
+	}
+	
+	@Override
+	public void delete(Account account) {
+		getDs().delete(getAccountByAccountName(account.getName()));
+	}
+	
 	public Set<Account> getAccountsByUsername(String username) {
 		LOG.info("Retrieving Accounts for [{}]", username);
 		Query<Account> query = getDs().createQuery(Account.class);

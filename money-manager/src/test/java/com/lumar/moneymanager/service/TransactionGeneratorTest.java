@@ -51,6 +51,5 @@ public class TransactionGeneratorTest {
 
 		Assert.assertEquals("Ted Baker", desc);
 		Assert.assertEquals("POS", type);
-
 	}
 }

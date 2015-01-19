@@ -20,7 +20,7 @@ public class Account extends BaseEntity {
     
 	//Related to the parsing of the account - maybe stored in seperate object?
 	private List<String> transactionHeadingOrdering;
-    private String transactionDelimeter; 
+    private String delimiter; 
 		
 	public Account() {
 		transactionHeadingOrdering = new ArrayList<String>();
@@ -87,8 +87,11 @@ public class Account extends BaseEntity {
 		return sampleTransaction;
 	}
 	
-	public String getTransactionDelimeter() {
-//		return transactionDelimeter;
-		return "\t"; //Always a tab for now!
+	public String getDelimiter() {
+		return delimiter;
+	}
+	
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
 	}
 }

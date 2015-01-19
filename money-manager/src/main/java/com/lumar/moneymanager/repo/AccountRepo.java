@@ -11,6 +11,10 @@ public interface AccountRepo {
 
 	public Key<Account> saveAccount(Account account);
 
+	public Key<Account> updateAccount(Account account);
+
 	public Account getAccountByAccountName(String accountName);
+
+	public void delete(Account account);
 	
 }

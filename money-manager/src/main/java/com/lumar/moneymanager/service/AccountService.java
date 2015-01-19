@@ -18,7 +18,9 @@ public interface AccountService {
 			 List<String> headings);
 	
 	public Key<Account> saveAccount(Account account);
-	
+
+	public Key<Account> updateAccount(Account account);
+
 	/**
 	 * Retrieves the accounts for the given user
 	 * @param username
@@ -32,4 +34,7 @@ public interface AccountService {
 	 * @return
 	 */
 	public Account getAccountByAccountName(String accountName);
+
+	
+	public void delete(Account account);
 }
