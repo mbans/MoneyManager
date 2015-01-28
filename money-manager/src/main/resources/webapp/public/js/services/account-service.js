@@ -12,7 +12,7 @@ app.service('accountService', function($http,$q) {
 				   headers: {"Content-Type":"application/json"}
 				  });
 		}
-
+	
 	this.updateAccount = function(account) {
 		console.info("Updating account " + account.name);
 		return $http({

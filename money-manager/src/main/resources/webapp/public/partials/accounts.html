@@ -74,7 +74,6 @@
 						<div class="row col-md-3">
 
 							<select ng-model="account.transactionHeadingOrdering[$index]">
-								
 								<!-- We add the currently selected item -->
  								<option ng-if="account.transactionHeadingOrdering[$index] != '' || account.transactionHeadingOrdering[$index] != undefined" selected="selected">
 									{{account.transactionHeadingOrdering[$index]}}
@@ -150,47 +149,4 @@
 			</table>
 		</div>
 	</div>
-
-
-
-
-
-
-	<!-- 
-	<div ng-show="userAccounts.length > 0">
-		Select Account: <select class="dropdown" ng-model="selectedAccount"
-			ng-options="acc.name for acc in userAccounts track by account.name" />
-	</div>
- -->
-
-
-
 </div>
-
-
-
-
-
-
-
-
-
-<!-- 
-<div class="row row-buffer">
-	<span class="col-md-1"></span>
-	<div class="col-md-10">
-		<center>
-			<button type="button" class="btn btn-default btn-md"
-				ng-click="viewTransactions()">Add Acount</button>
-			<div ng-show="userAccounts.length > 0">
-				Select Account: <select class="dropdown" ng-model="selectedAccount"
-					ng-options="acc.name for acc in userAccounts track by account.name" />
-			</div>
-			<div ng-show="userAccounts.length == 0">No accounts registered.</div>
-
-
-		</center>
-	</div>
-	<span class="col-md-1"></span>
-</div>
- -->

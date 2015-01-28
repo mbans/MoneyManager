@@ -3,31 +3,29 @@ var module = angular.module('money-manager');
 
 
 //Add the 'PasteController' as a 
-module.controller('transactionController',  function ($scope, transactionService, accountService) {
+module.controller('transactionController',  function ($scope, uiGridConstants, transactionService, accountService) {
 
-    $scope.chosenToUpload=false;
-	$scope.chosenToView = false;
-	
-	$scope.accountName="";
+	$scope.transactionService=transactionService;
+	$scope.accountService=accountService;
+	$scope.user=configuration.user; //Will be replaced by logged in user
+
+	$scope.uploadOutcome=undefined;
 	$scope.transactionText = "";
     $scope.delimiter="Tab";
     $scope.uploadIsValid=false;
     $scope.errors={};
-
     $scope.transactionText="";
     $scope.validTransactions=[];
+    $scope.rawValidTransactions=[];
     $scope.invalidTransactions=[]; 
     $scope.rawTransactionRows=[];
-    
     $scope.headings=[];
-
-    $scope.uploadMessage="";
+    $scope.rawTransactions="";
+    $scope.userAccounts=[];
+    $scope.selectedAccount={};
+	$scope.chosenToUpload=false;
+	$scope.chosenToView = false;
     
-    $scope.transactionGrid = {
-        data: 'validTransactions',
-        plugins: [new ngGridFlexibleHeightPlugin()],
-        columnDefs:$scope.transactionHeadings
-    }
     
     //Add a watcher to the data, we will be continually re-evaluating if the user's transactions meet the basic validation rules
     //1. Match the correct number of fields
@@ -35,8 +33,14 @@ module.controller('transactionController',  function ($scope, transactionService
     //3. Monetary anounts are valid
     $scope.$watch('transactionText', function() { 
     	if($scope.transactionText==undefined || $scope.transactionText=="") {
+    		//Re-initialise
+    	    $scope.validTransactions=[];
+    	    $scope.rawValidTransactions=[];
+    	    $scope.invalidTransactions=[]; 
+    	    $scope.rawTransactionRows=[];
     		return;
     	}
+    	$scope.uploadOutcome=undefined;
     	$scope.applyVerificationRules();
     });
 
@@ -53,13 +57,25 @@ module.controller('transactionController',  function ($scope, transactionService
     	$scope.chosenToView = true;
     }
     
-    //Upload the valid transactions
+    /**
+     * Upload transactions
+     */
     $scope.upload = function() {
-        $scope.invalidTransactions=[];
-        $scope.validTransactions=[];
-        $scope.transactionsWithUnknownCategory=[];
-        $scope.transactionService.upload($scope.selectedAccount,$scope.validTransactions);
-    }
+    	console.log("Uploading " + $scope.rawValidTransactions.length + " transactions.");
+        var promise=$scope.transactionService.upload($scope.selectedAccount,$scope.rawValidTransactions);
+		promise.then(
+			function(response) {
+				duplicates = response.data;
+				$scope.uploadOutcome={};
+				$scope.uploadOutcome.uploadedCount = $scope.rawValidTransactions.length  - duplicates.length;
+				$scope.uploadOutcome.duplicates = duplicates;
+			},
+			function(esponse) {
+				data = response.data;
+				bootbox.alert("Error uploading transactions, please attempt to reupload" + errorMessage);
+			}
+		);
+  }
     
    /**
     * Applies rules to the list of uploaded transactions, this allows real time feedback to the user on the transactions
@@ -70,6 +86,7 @@ module.controller('transactionController',  function ($scope, transactionService
     	var verificationOutcome=$scope.transactionService.applyVerificationRules($scope.selectedAccount, $scope.rawTransactionRows);
     	$scope.invalidTransactions = verificationOutcome.invalidTransactions;
     	$scope.validTransactions = verificationOutcome.validTransactions;
+    	$scope.rawValidTransactions = verificationOutcome.rawValidTransactions;
     	console.log("Finished applying transaction verification rules");
     }
     
@@ -105,115 +122,123 @@ module.controller('transactionController',  function ($scope, transactionService
             }
         }
     }
-	/////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//Currently signed in user
-	$scope.user=configuration.user;
-	
-	$scope.transactionService=transactionService;
-	$scope.accountService=accountService;
+
+    /**
+     * Display the transactions for the selected account
+     */
+    $scope.transactionsGridOptions = {
+    	    data:'selectedAccount.transactions', 				//transactions of the selected account 
+    	    columnDefs: [
+    	       { field: 'date', 
+    	    	 displayName: 'Date',
+    	    	 filter: {
+        	        condition: uiGridConstants.filter.CONTAINS,
+        	      }
+    	       },
+    	       
+    	       { field: 'description', 
+    	    	 displayName: 'Description', 
+    	    	 enableColumnResizing: true,
+    	    	 width: '40%',
+    	    	 filter: {
+    	             condition: uiGridConstants.filter.CONTAINS,
+    	             placeholder: 'contains'
+    	           }
+    	       },
+    	       
+    	       { field: 'amount', displayName: 'Amount', 
+    	    	 aggregationType: uiGridConstants.aggregationTypes.sum,
+    	    	 filters: [{
+	    		 		condition: uiGridConstants.filter.GREATER_THAN,
+	             		placeholder: 'greater than'
+	           		  },
+	           		  {
+	    		 		condition: uiGridConstants.filter.LESS_THAN,
+	             		placeholder: 'less than'
+	           		  }]
+    	       },
+
+    	       { field: 'credit', 
+    	    	 displayName: 'Credit', 
+    	    	 aggregationType: uiGridConstants.aggregationTypes.sum,
+    	    	 filters: [{
+	    		 		condition: uiGridConstants.filter.GREATER_THAN,
+	             		placeholder: 'greater than'
+	           		  },
+	           		  {
+	    		 		condition: uiGridConstants.filter.LESS_THAN,
+	             		placeholder: 'less than'
+	           		  }]    	       
+    	       },
+    	       
+    	       { field: 'debit', 
+    	    	 displayName: 'Debit', 
+    	    	 aggregationType: uiGridConstants.aggregationTypes.sum,
+    	    	 filters: [{
+    	    		 		condition: uiGridConstants.filter.GREATER_THAN,
+    	             		placeholder: 'greater than'
+    	           		  },
+    	           		  {
+      	    		 		condition: uiGridConstants.filter.LESS_THAN,
+      	             		placeholder: 'less than'
+      	           		  }]
+    	       },
+    	       
+    	    	 { field: 'runningBalance', 
+    	    	   displayName: 'Balance',
+      	    	   filters: [{
+	    		 		condition: uiGridConstants.filter.GREATER_THAN,
+	             		placeholder: 'greater than'
+	           		  },
+	           		  {
+	    		 		condition: uiGridConstants.filter.LESS_THAN,
+	             		placeholder: 'less than'
+	           		  }]
+    	    	 }
+    	       ],
+    	       
+    	       
+    	    enableFiltering:true,
+    	    enableHorizontalScrollbar: 2, 	//When needed
+    		enableVerticalScrollbar: 2, 	//When needed
+    	    //showGroupPanel: true   -- WARNING this causes strange behaviour with the grid heading  	    ,
+    	    multiSelect : true,
+    	    enableColumnResizing :true,
+    	    plugins: [new ngGridFlexibleHeightPlugin()],
+    	    showColumnFooter: true,
+    	    showFooter: true
+    };
     
-	$scope.rawPaste = '';
-    $scope.parsedPaste = [];
-    $scope.json="some Json";
-    $scope.rawTransactions="";
-    $scope.colDefs=[];
-    $scope.selectedTransactions=[];
-    $scope.userAccounts=[];
-    $scope.viewTrans=false;
-    $scope.viewTransactionUpload=false;
-    $scope.selectedAccount={};
+    $scope.getTableStyle= function() {
+    	   var rowHeight=30;
+    	   var headerHeight=45;
+    	   return {
+    	      height: ($scope.selectedAccount.transactions.length * rowHeight + headerHeight) + "px"
+    	   };
+    	};
     
-    // Grid ///////////////////////////////////////////////////////////////////
-    $scope.gridOptions = {
-    	    data: 'selectedTransactions',
-    	    columnDefs: 'colDefs',
-    	    enableColumnResize: false,
-    	    showGroupPanel: true,
-    	    plugins: [new ngGridFlexibleHeightPlugin()]	
-   };
-   
-    //Add a watcher to the data, each time it changes we recreate the colsDef
-    $scope.$watch('selectedTransactions', function() { 
-    	$scope.updateSelectedTransactions(); 
-    });
-   
-    
-    $scope.updateSelectedTransactions = function() {
-    	$scope.colDefs = [];
-    	if($scope.selectedTransactions.length > 0) {
-	    	 angular.forEach(Object.keys($scope.selectedTransactions[0]), function(key){
-	    	    $scope.colDefs.push({ field: key });
-	    	  });
-	      }
-    }
-    
-    ///////////////////////////////////////////////////////////////////
-    
-/*    //This 
-    $scope.viewTransactions = function() {
-    	$scope.viewTrans=true;
-    	$scope.viewTransactionUpload=false;
-    	console.log("Loading Transactions for Account "+JSON.stringify($scope.selectedAccount.name));
-    	transactionPromise = $scope.transactionService.getTransactions($scope.selectedAccount)
-    						 	.then(
-									function(transactions) {
-										console.log("Retrived " + transactions.length + " transactions for "+ accountName);
-										$scope.selectedTransactions=transactions;
-									},
-									function(httpError) {
-										console.log("Error Retrieving transactions for selectedTransactions");
-								});
-    }
-*/    
-    //This 
+//		TODO: Eventually may need to use AJAX if/when we seperate Account/Transaction into seperate collections
+//    	transactionPromise = $scope.transactionService.getTransactions($scope.selectedAccount)
+//    						 	.then(
+//									function(transactions) {
+//										console.log("Retrived " + transactions.length + " transactions for "+ accountName);
+//										$scope.selectedTransactions=transactions;
+//									},
+//									function(httpError) {
+//										console.log("Error Retrieving transactions for selectedTransactions");
+//								});
+//    }
+
+    /**
+     * TODO: Do we need this
+     */
     $scope.viewTransUploadArea = function() {
     	$scope.viewTrans=false;
     	$scope.viewTransactionUpload=true;
     	transactions = $scope.transactionService.getTransactions($scope.selectedAccount.id);
     	$scope.selectedTransactions=transactions;
-    	//$scope.updateSelectedTransactions();
     }
-    
-    $scope.uploadTransactions = function() {
-    	console.log("Uploading transactions.....");
-    	isValid = validateUploadTrasactions($scope.rawTransactions);
-    	if(isValid) {
-    		console.log("Passed Validation")
-    	}
-    	else {
-    		console.log("Failed Validation");
-    	}
-
-    	
-    }
-    
+        
 	//Retrieves user accounts for the current user
     $scope.getUserAccounts = function() {
     	console.log("In cotroller.getUserAccounts()");
@@ -227,18 +252,19 @@ module.controller('transactionController',  function ($scope, transactionService
 			});
     }
     
-    $scope.clear = function() {
+    $scope.clearUpload = function() {
     	$scope.selectedTransactions=[];
-        $scope.rawPaste = '';
-        $scope.parsedPaste = [];
         $scope.rawTransactions="";
     }
-        
+    
     $scope.uploadBoxEmpty = function() {
     	textAreaContent = $scope.rawTransactions;
     	return (textAreaContent == "");
     }
     
+    /**
+     * Place into a seperate service
+     */
     function validateUploadTrasactions(rawTransactions) {
     	console.log("Validating uploaded Transactions ");
     	var transactionRows = [];
@@ -256,7 +282,6 @@ module.controller('transactionController',  function ($scope, transactionService
                  
                  //TODO: Check that types match
                  if(accountHeadings.length != cols.length) {
-                	 console.log("Detected a row with incorrect number of columns ["+cols+"]");
                 	 invalidRows.push(cols);
                  }
                  else {
@@ -267,7 +292,6 @@ module.controller('transactionController',  function ($scope, transactionService
     	
     	return invalidRows.length == 0;
     }
-    
     //Initialise
     $scope.getUserAccounts();
 });

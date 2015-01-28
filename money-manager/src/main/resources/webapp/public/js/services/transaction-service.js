@@ -21,23 +21,33 @@ app.service('transactionService', function($http) {
 		       ];
 	}
 	
-    //Upload the valid transactions
-    this.upload = function(account, transactions) {
-    	accountName = account.name;
-    	
-		return $http.post(configuration.baseUrl+"/account/"+accountName +"/transactions/")	
-		.then(
-			function(response) {
-				var validTransactions=response.data.validTransactions;
-				var invalidTransactions=response.data.invalidTransactions;
-				var transactionsWithUnknownCategory=response.data.transactionsWithUnknownCategory;
-				console.log("Recieved Success Response from Server....JSON="+response);
-			},
-			function(error) {
-				console.log("Error uploading transactions");
-				return error;
-			});
-    }
+	/**
+	 * Upload transactions to the given account
+	 */
+	this.upload = function(account,transactions) {
+		console.info("uploading tractions for " + account.name);
+		var allData={};
+		allData.accountName=account.name;
+		allData.accountOwner=account.accountOwner;
+		allData.transactions=transactions;
+		
+		return $http({
+			   url: configuration.baseUrl+"/account/upload/", 
+			   method:"POST",
+			   data: JSON.stringify(allData),
+			   headers: {"Content-Type":"application/json"}
+			  });		
+	}
+	
+	this.updateAccount = function(account) {
+		console.info("Updating account " + account.name);
+		return $http({
+			   url: configuration.baseUrl+"/account/", 
+			   method:"PUT",
+			   data: JSON.stringify(account),
+			   headers: {"Content-Type":"application/json"}
+			  });
+	}
 	
 	//Stubbed
 	this.getTransactions = function(account) {
@@ -68,6 +78,7 @@ app.service('transactionService', function($http) {
 		var outcome = {};
 		outcome.invalidTransactions=[];
 		outcome.validTransactions=[];
+		outcome.rawValidTransactions=[];
 		outcome.rawTransactionRows=rawTransactionLines;
 		outcome.transactionRows=[];
 		
@@ -114,6 +125,7 @@ app.service('transactionService', function($http) {
 			}
 			else {
 				outcome.validTransactions.push(transactionRow);
+				outcome.rawValidTransactions.push(rawTransactionRow);
 			}
 		}
 	}
@@ -146,12 +158,13 @@ app.service('transactionService', function($http) {
 			if(invalidTran.transaction == undefined) {
 				if(!this.isInArray(transactionRow, outcome.validTransactions)) {
 					outcome.validTransactions.push(transactionRow); 	
+					outcome.rawValidTransactions.push(rawTransactionRow);
 				}
 			}
 			else {
 	            outcome.invalidTransactions.push(invalidTran);
 			}
-		}
+		}	
 	}
 	
 	/**

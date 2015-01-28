@@ -1,12 +1,11 @@
 package com.lumar.moneymanager.domain;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Property;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @Entity
 public class Account extends BaseEntity {
@@ -18,12 +17,15 @@ public class Account extends BaseEntity {
 	private String accountOwner; // the username for user
     private String sampleTransaction; 
     
+    private Set<Transaction> transactions;
+    
 	//Related to the parsing of the account - maybe stored in seperate object?
 	private List<String> transactionHeadingOrdering;
     private String delimiter; 
 		
 	public Account() {
-		transactionHeadingOrdering = new ArrayList<String>();
+		transactionHeadingOrdering = Lists.newArrayList();
+		transactions = Sets.newHashSet();
 	}
 
 	public String getBank() {
@@ -88,10 +90,29 @@ public class Account extends BaseEntity {
 	}
 	
 	public String getDelimiter() {
+		if("Tab".equals(delimiter) || "tab".equals(delimiter)) {
+			return "\t";
+		}
 		return delimiter;
 	}
 	
 	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
+	}
+	
+	public Set<Transaction> getTransactions() {
+		return transactions;
+	}
+	
+	public void setTransactions(Set<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	public void addTransactions(Set<Transaction> transactionsToSave) {
+		transactions.addAll(transactionsToSave);
+	}
+	
+	public void addTransaction(Transaction transaction) {
+		transactions.add(transaction);
 	}
 }

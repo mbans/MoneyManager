@@ -1,91 +1,189 @@
 package com.lumar.moneymanager.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
 import com.lumar.moneymanager.domain.Account;
 import com.lumar.moneymanager.domain.Transaction;
-import com.lumar.moneymanager.domain.TransactionEntry;
-import com.lumar.moneymanager.domain.TransactionHeading;
 
 public class TransactionGenerator {
-	
-	public static String TRAN_DATE = "Transaction Date";
-	public static String TRAN_TYPE = "Transaction Type";
-	public static String TRAN_DESC = "Transaction Description";
-	public static String TRAN_AMOUNT = "Transaction Amount";
-	public static String TRAN_CREDIT = "Transaction Credit";
-	public static String TRAN_DEBIT = "Transaction Debit";
-	public static String BALANCE = "Running Balance";
-	public static String CATEGORY = "Category";
-	
-	public static final TransactionHeading<Date> TRAN_DATE_HEADER = new TransactionHeading<Date>(TRAN_DATE,true,Date.class);
-	public static final TransactionHeading<String> TRAN_TYPE_HEADER = new TransactionHeading<String>(TRAN_TYPE,true,String.class);
-	public static final TransactionHeading<String> TRAN_DESC_HEADER = new TransactionHeading<String>(TRAN_DESC,true,String.class);
-	public static final TransactionHeading<String> TRAN_AMOUNT_HEADER = new TransactionHeading<String>(TRAN_AMOUNT,true,String.class);
-	public static final TransactionHeading<String> TRAN_CREDIT_HEADER = new TransactionHeading<String>(TRAN_CREDIT,true,String.class);
-	public static final TransactionHeading<String> TRAN_DEBIT_HEADER = new TransactionHeading<String>(TRAN_DEBIT,true,String.class);
-	public static final TransactionHeading<String> BALANCE_HEADER = new TransactionHeading<String>(BALANCE,true,String.class);
-	public static final TransactionHeading<String> CATEGORY_HEADER = new TransactionHeading<String>(CATEGORY,true,String.class);
-	
-	public static final Map<String, TransactionHeading<?>> headings = new HashMap<String,TransactionHeading<?>>() {{
-		//TODO: Support for Strings only at the moment
-		put(TRAN_DATE,TRAN_TYPE_HEADER);
-		put(TRAN_TYPE,TRAN_TYPE_HEADER);
-		put(TRAN_DESC,TRAN_DESC_HEADER);
-		put(TRAN_AMOUNT,TRAN_AMOUNT_HEADER);
-		put(TRAN_CREDIT,TRAN_CREDIT_HEADER);
-		put(TRAN_DEBIT,TRAN_DEBIT_HEADER);
-		put(BALANCE,BALANCE_HEADER);
-		put(CATEGORY,CATEGORY_HEADER);
-	}};
-	
+			
 	public Set<Transaction> createTransactions(Account account, List<String> transactions) {
 		List<String> headings = account.getTransactionHeadingOrdering();
 		Set<Transaction> toReturn = new HashSet<Transaction>(); 
 		
 		for(String transaction : transactions) {
-			String[] tran = transaction.split(account.getDelimiter());
-			toReturn.add(createTransaction(account.getName(), tran,headings));
+			String[] transactionValues = transaction.split(account.getDelimiter());
+			Transaction tran = createTransaction(transactionValues , headings); 
+			toReturn.add(tran);
 		}
 		return toReturn;
 	}
 	
 	/**
-	 * TODO: Eventually replace accountName with AccountId
+	 * Returns 
+	 * @param account
+	 * @param transactions
+	 * @return
+	 */
+	public Map<Transaction,String> createTransactionMap(Account account, List<String> transactions) {
+		Map<Transaction,String> toReturn = Maps.newHashMap();
+		for(String transactionStr : transactions) {
+			Transaction tran = createTransaction(account, transactionStr);
+			toReturn.put(tran,transactionStr);
+		}
+		return toReturn;
+	}
+	
+	private Transaction createTransaction(Account account, String transactionStr) {
+		String[] transactionValues = transactionStr.split(account.getDelimiter());
+		return createTransaction(transactionValues , account.getTransactionHeadingOrdering()); 
+	}
+	
+	/**
+	 * Inspects the credit and debit and assign amount accordingly
+	 * @param tran
+	 */
+	private void setAmount(Transaction tran) {
+		//Only do stuff if amount has a zero value
+		if(Transaction.ZERO_BALANCE.compareTo(tran.getAmount()) != 0) {
+			return;
+		}
+		
+		//Amount is a Credit
+		BigDecimal amount = null;
+		if(Transaction.ZERO_BALANCE.compareTo(tran.getCredit()) == 0) { //Credit is ZERO, therefore must be a debit
+			amount = tran.getDebit().negate().setScale(2, RoundingMode.CEILING);
+		}
+		else {	//Debit is ZERO, therefore must be a credit
+			amount = tran.getCredit().setScale(2, RoundingMode.CEILING);
+		}
+		tran.setAmount(amount);
+	}
+
+	/**
 	 * Creates a single Transaction
 	 * @param tran
 	 * @param headings
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected <R> Transaction createTransaction(String accountName, String[] transactionValues, List<String> headingNamesForAccount) {
-		Transaction tran = new Transaction(accountName);
-		
+	protected Transaction createTransaction(String[] transactionValues, List<String> headingNamesForAccount) {
+		Transaction tran = new Transaction();
+
 		for(int i=0; i < transactionValues.length; i++) {
-			String transactionColumnValue=transactionValues[i];
-			TransactionHeading<R> heading = (TransactionHeading<R>)headings.get(headingNamesForAccount.get(i));
-			addTranEntry(tran, heading, transactionColumnValue);
+			String headingName=headingNamesForAccount.get(i);
+			String tranFieldValue=transactionValues[i];
+			
+			TransactionHeadingDef headingDefinition = TransactionHeadingDef.getEntry(headingName);
+			
+			//Assigns the value to the given transaction, including all required casting
+			headingDefinition.assignField(tran, tranFieldValue);
 		}
+		setAmount(tran);
 		return tran;
 	}
 	
 	/**
-	 * R is the target type for our value
-	 * @param tran
-	 * @param heading
-	 * @param tranColValue
+	 * @param account
+	 * @param rawTransactionUpload
+	 * @return
 	 */
-	private <R> void addTranEntry(Transaction tran, TransactionHeading<R> heading, String tranColValue) {
-		//TODO: Cast the 'tranColumnValue' to type T 
-		//For now everything will be stored as string though;
-		R tranValue = (R)tranColValue;  //This will only work for String, need to put support for casting to Date/Integer/BigDecimal etc
-		TransactionEntry<R> tranEntry = new TransactionEntry<R>(heading.getName(), tranValue);
-		tran.addTransactionEntry(tranEntry);
+	public Set<Transaction> createTransactions(Account account, String rawTransactionUpload) {
+		List<String> transactions = Arrays.asList(rawTransactionUpload.split("\n"));
+		return createTransactions(account,transactions);
 	}
 	
+	
+	/**
+	 * Defines the transactionFields along with how to convert each from string to the reqired format
+	 * @author Martin
+	 *
+	 */
+	public enum TransactionHeadingDef {
+		DATE("Date",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
+					Date date = sdf.parse(rawValue);
+					tran.setDate(date);
+				}
+				catch(Exception e) {
+					throw new RuntimeException("Could not convert Date["+rawValue+"] must be in format dd-MMM-yy");				}
+			}
+		},
+		TYPE("Type",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				tran.setType(rawValue);
+			}
+		},
+		DESCRIPTION("Description",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				tran.setDescription(rawValue);
+			}
+		},
+		AMOUNT("Amount",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				tran.setAmount(BigDecimalConverter.convert(rawValue));
+			}
+		},
+		CREDIT("Credit",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				tran.setCredit(BigDecimalConverter.convert(rawValue));
+			}
+		},
+		DEBIT("Debit",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				tran.setDebit(BigDecimalConverter.convert(rawValue));
+			}
+		},
+		BALANCE("Balance",true) {
+			@Override
+			public void assignField(Transaction tran, String rawValue) {
+				tran.setRunningBalance(BigDecimalConverter.convert(rawValue));
+			}
+		};
+		
+		public abstract void assignField(Transaction tran, String rawValue);
+		
+		private String name;
+		
+		private boolean mandatory;
+		
+		private TransactionHeadingDef(String name, boolean mandatory) {
+			this.name = name;
+			this.mandatory = mandatory;
+		}
+		
+		public static TransactionHeadingDef getEntry(String name) {
+			for(TransactionHeadingDef heading : TransactionHeadingDef.values()) {
+				if(heading.getName().equals(name)) {
+					return heading;
+				}
+			}
+			throw new RuntimeException("No heading called ["+name+"]");
+		}
+
+		public String getName() {
+			return name;
+		}
+		
+		public boolean isMandatory() {
+			return mandatory;
+		}
+	}
 }

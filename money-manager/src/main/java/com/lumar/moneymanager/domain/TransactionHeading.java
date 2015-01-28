@@ -7,7 +7,7 @@ public class TransactionHeading<T> {
 	
 	private String name;
 	private boolean mandatory;
-	private Class<T> c; 
+	private Class<T> type; 
 	
 	public TransactionHeading() {
 	}
@@ -15,11 +15,15 @@ public class TransactionHeading<T> {
 	public TransactionHeading(String name, boolean mandatory, Class<T> c) {
 		this.name = name;
 		this.mandatory=mandatory;
-		this.c = c;
+		this.type = type;
 	}
 	
 	public String getName() {
 		return name;
+	}
+	
+	public Class<T> getType() {
+		return type;
 	}
 	
 	public boolean isMandatory() {
@@ -27,7 +31,7 @@ public class TransactionHeading<T> {
 	}
 	
 	public T getDefaultInstance() {
-		return new  TransactionHeading.GenericInstanceCreator<T>().createContent(c);
+		return new  TransactionHeading.GenericInstanceCreator<T>().createContent(type);
 	}
 	
 	private static class GenericInstanceCreator<U> {

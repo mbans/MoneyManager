@@ -1,55 +1,66 @@
 package com.lumar.moneymanager.service;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_DATE_HEADER;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_DESC_HEADER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import com.lumar.moneymanager.domain.Account;
 import com.lumar.moneymanager.domain.Transaction;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_DATE_HEADER;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_DESC_HEADER;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.lumar.moneymanager.domain.Transaction;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_DATE_HEADER;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_TYPE_HEADER;
-import static com.lumar.moneymanager.service.TransactionGenerator.TRAN_DESC_HEADER;
+import com.lumar.moneymanager.integration.AccountIntegrationTest;
+import com.lumar.moneymanager.service.TransactionGenerator.TransactionHeadingDef;
 
 
 public class TransactionGeneratorTest {
 	
 	private TransactionGenerator tranGen = new TransactionGenerator();
 	
+	private static List<String> tranCols = new ArrayList<String>(){{
+		add(TransactionHeadingDef.DATE.getName()); 
+		add(TransactionHeadingDef.TYPE.getName()); 
+		add(TransactionHeadingDef.DESCRIPTION.getName()); 
+		add(TransactionHeadingDef.CREDIT.getName());
+		add(TransactionHeadingDef.DEBIT.getName());
+		add(TransactionHeadingDef.BALANCE.getName());
+	}};
+	
+
 	@Test
 	public void shouldCreateTransaction() {
-		String accountName = "Martin-RBS";
+		Account account = AccountIntegrationTest.createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab");
 		
-		List<String> tranCols = new ArrayList<String>(){{
-			add(TransactionGenerator.TRAN_DATE); 
-			add(TransactionGenerator.TRAN_TYPE); 
-			add(TransactionGenerator.TRAN_DESC);
-		}};
+		account.setTransactionHeadingOrdering(tranCols);
 		
-		String[] tranValues = {"22-Dec", "POS", "Ted Baker"};
+		String rawTransactionUpload="22-Dec-83	POS	TedBaker	12.00	-	£1212.00\n"+
+									"26-Jan-99	ATM	Tesco	-	12.09	£112.00";
 		
 		//When
-		Transaction tran = tranGen.createTransaction(accountName, tranValues, tranCols);
+		Set<Transaction> trans = tranGen.createTransactions(account, rawTransactionUpload);
+		
+		Iterator<Transaction> iter = trans.iterator();
 		
 		//Then
-		String desc = tran.getTransactionFieldValue(TRAN_DESC_HEADER);
-		String type = tran.getTransactionFieldValue(TRAN_TYPE_HEADER);
-
-		Assert.assertEquals("Ted Baker", desc);
-		Assert.assertEquals("POS", type);
+		assertEquals(2,trans.size());
+		Transaction t = iter.next();
+		assertEquals("ATM", t.getType());
+		assertEquals("Tesco", t.getDescription());
+		assertEquals(new BigDecimal("0.00"), t.getCredit());
+		assertEquals(new BigDecimal("12.09"), t.getDebit());
+		assertEquals(new BigDecimal("112.00"), t.getRunningBalance());
+		assertEquals(new BigDecimal("-12.09"), t.getAmount());
+		
+		t = iter.next();
+		assertEquals("POS", t.getType());
+		assertEquals("TedBaker", t.getDescription());
+		assertEquals(new BigDecimal("12.00"), t.getCredit());
+		assertEquals(new BigDecimal("0.00"), t.getDebit());
+		assertEquals(new BigDecimal("1212.00"), t.getRunningBalance());
+		assertEquals(new BigDecimal("12.00"), t.getAmount());
 	}
 }

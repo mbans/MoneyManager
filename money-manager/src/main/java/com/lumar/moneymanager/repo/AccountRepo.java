@@ -7,14 +7,26 @@ import com.lumar.moneymanager.domain.Account;
  
 public interface AccountRepo {
 	
-	public Set<Account> getAccountsByUsername(String username);
 
 	public Key<Account> saveAccount(Account account);
 
 	public Key<Account> updateAccount(Account account);
 
-	public Account getAccountByAccountName(String accountName);
+	/**
+	 * Retrieves account for user and accountName
+	 * @param user
+	 * @param accountName
+	 * @return
+	 */
+	public Account getAccountByOwnerAndName(String user,String accountName);
 
+	/**
+	 * Get accounts for accountOwner
+	 * @param username
+	 * @return
+	 */
+	public Set<Account> getAccountsForOwner(String username);
+		
 	public void delete(Account account);
 	
 }

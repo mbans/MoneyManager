@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.lumar.moneymanager.domain.Transaction;
+import com.lumar.moneymanager.domain._Transaction;
 
 public class TransactionValidation {
 	
 	private Map<String, List<String>> invalidTransactions; 
 	private List<String> validTransactions; 
-	private Set<Transaction> transasctions;
+	private Set<_Transaction> transasctions;
 
 	public TransactionValidation(List<String> transactions) {
 		validTransactions = transactions;
@@ -44,11 +44,11 @@ public class TransactionValidation {
 		invalidTrans.add(transactionText);
 	}
 	
-	public Set<Transaction> getTransasctions() {
+	public Set<_Transaction> getTransasctions() {
 		return transasctions;
 	}
 	
-	public void setTransasctions(Set<Transaction> transasctions) {
+	public void setTransasctions(Set<_Transaction> transasctions) {
 		this.transasctions = transasctions;
 	}
 }

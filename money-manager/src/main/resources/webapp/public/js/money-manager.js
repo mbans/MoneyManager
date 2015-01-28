@@ -6,4 +6,4 @@ var configuration = {
 			
 }
 
-var moneyManagerApp = angular.module('money-manager', ['ngLocale','ngGrid','ngRoute'] );
+var moneyManagerApp = angular.module('money-manager', ['ngLocale','ui.grid','ui.grid.edit', 'ngRoute'] );

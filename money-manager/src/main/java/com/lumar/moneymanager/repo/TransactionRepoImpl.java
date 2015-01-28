@@ -1,16 +1,28 @@
 package com.lumar.moneymanager.repo;
 
-import java.util.Set;
 
-import com.lumar.moneymanager.domain.Transaction;
+public class TransactionRepoImpl { //extends AbstractRepo  implements TransactionRepo {
 
-public class TransactionRepoImpl implements TransactionRepo {
-		
-	public Set<Transaction> getTransactionsByAccountName(String accountName) {
-		return null;
+/*	private static Logger LOG = LoggerFactory.getLogger(TransactionRepoImpl.class);
+	
+	public TransactionRepoImpl() {
+		super();
 	}
 	
-	public boolean saveTransactions() {
-		return false;
+	public TransactionRepoImpl(String databaseName) {
+		super(databaseName);
 	}
+	
+	@Override
+	public Set<Transaction> getTransactionsByAccount(Account account) {
+		Query<Transaction> query = getDs().createQuery(Transaction.class);
+		Set<Account> accounts =	Sets.newHashSet(); //new HashSet<Account>(query.asList());
+		LOG.info("Retrieved ["+accounts.size()+"] accounts for "+username);
+		return accounts;
+	}
+
+	public Set<Key<Transaction>> saveTransactions(Set<Transaction>) transactionsToSave) {
+		return null;
+	}
+*/
 }

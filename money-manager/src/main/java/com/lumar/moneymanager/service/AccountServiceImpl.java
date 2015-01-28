@@ -1,6 +1,5 @@
 package com.lumar.moneymanager.service;
 
-import java.net.ConnectException;
 import java.util.List;
 import java.util.Set;
 
@@ -18,58 +17,42 @@ public class AccountServiceImpl implements AccountService {
 	
 	public AccountRepo accountRepo; 
 
-	public AccountServiceImpl() {
-		this(null);
-	}
-
-	public AccountServiceImpl(String databaseName) {
-		if(databaseName == null) {
-			accountRepo = new AccountRepoImpl();
-			verifyConnection();
-		}
-		else {
-			accountRepo = new AccountRepoImpl(databaseName);
-		}
+	public AccountServiceImpl(AccountRepo accountRepo) {
+		this.accountRepo = accountRepo;
+		verifyConnection();
 	}
 	
-	private void verifyConnection() {
-		try {
-			accountRepo.getAccountByAccountName("");
-		}
-		catch(Exception e) {
-			throw new RuntimeException("Looks like the DB is down.....get it started (mongod)");
-		}
+	@Override
+	public Account getAccountByOwnerAndName(String accountOwner, String accountName) {
+		return accountRepo.getAccountByOwnerAndName(accountOwner, accountName);
 	}
 	
-	
-	public Account getAccountByAccountName(String accountName) {
-		return accountRepo.getAccountByAccountName(accountName);
-	}
-	
+	@Override
 	public Key<Account> saveAccount(Account account) {
-		//Check if we have an entry with the same accountName
 		LOG.info("Checking if Account["+account.getName()+"] already exists");
-		Account existingAccount = accountRepo.getAccountByAccountName(account.getName());
+		Account existingAccount = accountRepo.getAccountByOwnerAndName(account.getAccountOwner(), account.getName());
+
 		if(existingAccount != null) {
 			throw new RuntimeException("There already exists an account with accountName ["+ account.getName() + "]");
 		}
 		
 		//Save account
 		Key<Account> savedAccount = accountRepo.saveAccount(account);
-		List<String> transactionHeadingOrdering = account.getTransactionHeadingOrdering();
 		LOG.info("Saved Account [{}]",savedAccount);
 		return savedAccount;
 	}
 	
+	@Override
 	public Key<Account> updateAccount(Account account) {
 		return accountRepo.updateAccount(account);
 	}
-		
+	
 	@Override
 	public void delete(Account account) {
 		accountRepo.delete(account);
 	}
 	
+	@Override
 	public Key<Account> createAccount(String user, 
 								 String accountName, 
 								 String bank, 
@@ -91,8 +74,9 @@ public class AccountServiceImpl implements AccountService {
 		return accountRepo.saveAccount(account);
 	}
 	
-	public Set<Account> getAccounts(String username) {
-		return accountRepo.getAccountsByUsername(username);
+	@Override
+	public Set<Account> getAccountsForUser(String owner) {
+		return accountRepo.getAccountsForOwner(owner);
 	}
 	
 	private void checkForTabDelimiter(Account account) {
@@ -101,5 +85,13 @@ public class AccountServiceImpl implements AccountService {
 		}
 	}
 
+	private void verifyConnection() {
+		try {
+			accountRepo.getAccountsForOwner("");
+		}
+		catch(Exception e) {
+			throw new RuntimeException("Looks like the DB is down.....get it started (mongod)");
+		}
+	}
 	
 }

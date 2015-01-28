@@ -21,10 +21,6 @@ public class AccountRepoImpl extends AbstractRepo implements AccountRepo  {
 
 	private Logger LOG = LoggerFactory.getLogger(AccountRepoImpl.class);
 	
-	public AccountRepoImpl() {
-		super();
-	}
-	
 	public AccountRepoImpl(String databaseName) {
 		super(databaseName);
 	}
@@ -34,19 +30,25 @@ public class AccountRepoImpl extends AbstractRepo implements AccountRepo  {
 	}
 
 	public Key<Account> updateAccount(Account account) {
+
 		//Delete existing
-		getDs().delete(getAccountByAccountName(account.getName()));
+		delete(account);
 		
 		//Save new account
 		return saveAccount(account);
 	}
-	
+
 	@Override
 	public void delete(Account account) {
-		getDs().delete(getAccountByAccountName(account.getName()));
+		Account acc= getAccountByOwnerAndName(account.getAccountOwner(), account.getName());
+		if(acc != null) {
+			getDs().delete(acc);
+		}			
+		LOG.info("Account ["+acc+"] does not exist");
 	}
-	
-	public Set<Account> getAccountsByUsername(String username) {
+
+	@Override
+	public Set<Account> getAccountsForOwner(String username) {
 		LOG.info("Retrieving Accounts for [{}]", username);
 		Query<Account> query = getDs().createQuery(Account.class);
 		query.criteria("accountOwner").equal(username);
@@ -56,11 +58,12 @@ public class AccountRepoImpl extends AbstractRepo implements AccountRepo  {
 	}
 	
 	@Override
-	public Account getAccountByAccountName(String accountName) {
-		Query<Account> query = getDs().createQuery(Account.class);
-		query.criteria("name").equal(accountName);
+	public Account getAccountByOwnerAndName(String user, String accountName) {
+		Query<Account> query = getDs().find(Account.class);
+		query.and(query.criteria("name").equal(accountName), 
+				  query.criteria("accountOwner").equal(user));
+
 		Set<Account> accounts = new HashSet<Account>(query.asList());
-		
 		if(accounts.size() == 0) {
 			LOG.info("No account with Account Name [{}]",accountName);
 			return null;
