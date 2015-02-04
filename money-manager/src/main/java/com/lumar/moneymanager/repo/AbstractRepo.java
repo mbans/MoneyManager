@@ -8,6 +8,7 @@ import com.google.code.morphia.Key;
 import com.google.code.morphia.Morphia;
 import com.lumar.moneymanager.domain.Account;
 import com.lumar.moneymanager.domain.BigDecimalBigDecimalMorphiaConverter;
+import com.lumar.moneymanager.domain.LocalDateMorphiaConverter;
 import com.lumar.moneymanager.service.BigDecimalConverter;
 import com.mongodb.Mongo;
 
@@ -30,6 +31,7 @@ public class AbstractRepo {
 			this.mongo = new Mongo();
 			morphia.mapPackage("com.lumar.moneymanager.domain");
 			morphia.getMapper().getConverters().addConverter(BigDecimalBigDecimalMorphiaConverter.class);
+			morphia.getMapper().getConverters().addConverter(LocalDateMorphiaConverter.class);
 			ds = morphia.createDatastore(databaseName);
 			
 			LOG.info("Created Morphia DataSource for MongoDb database["

@@ -1,7 +1,7 @@
 //Defining the Route Module of our application
 //This Creates the module, and injects the required dependancies
 var configuration = {
-		baseUrl:"http://localhost:4567",
+		baseUrl:"http://localhost:5678",
 		user:"martin"
 			
 }

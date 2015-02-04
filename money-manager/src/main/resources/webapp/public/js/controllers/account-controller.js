@@ -48,8 +48,8 @@ module.controller('accountController',  function ($scope, accountService, transa
     }
     
     $scope.getSmallVersion = function(fieldName) {
-    	if(fieldName.length > 20) {
-    		return fieldName.substring(0,19)+"...";
+    	if(fieldName.length > 15) {
+    		return fieldName.substring(0,14)+"...";
     	}
     	return fieldName;
     }
@@ -73,6 +73,7 @@ module.controller('accountController',  function ($scope, accountService, transa
     	$scope.account={};
     	$scope.account.accountOwner=$scope.user;
     	$scope.account.transactionHeadingOrdering=[];
+        $scope.sampleTransactionEntries=[];
     }
 
     //Delete Account
@@ -141,7 +142,7 @@ module.controller('accountController',  function ($scope, accountService, transa
     }
     
 	//Constant
-	$scope.transactionFieldHeadings=transactionService.transactionFieldHeadings;
+					$scope.transactionFieldHeadings = transactionService.transactionFieldHeadings;
 	
 	//Get the user accounts on start-up
 	$scope.getUserAccounts();

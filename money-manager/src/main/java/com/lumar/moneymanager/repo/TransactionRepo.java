@@ -1,10 +1,5 @@
 package com.lumar.moneymanager.repo;
 
-import java.util.Set;
-
-import com.google.code.morphia.Key;
-import com.lumar.moneymanager.domain.Account;
-import com.lumar.moneymanager.domain._Transaction;
 
 public interface TransactionRepo {
 

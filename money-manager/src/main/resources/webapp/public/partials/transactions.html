@@ -2,15 +2,13 @@
 		
 	<!-- Select user account -->
 	<div class="row row-buffer">
-		<span class="col-md-1"></span>
 			<center>
-			<div class="center col-md-10">
+			<div class="col-md-offset-5 col-md-2">
 				Select Account:
-			    <select class="dropdown" ng-model="selectedAccount" ng-options="account.name for account in userAccounts track by account.name">
+			    <select class="dropdown form-control" ng-model="selectedAccount" ng-options="account.name for account in userAccounts track by account.name">
 			    </select>
 			</div>
 			</center>
-			<span class="col-md-1"></span>
      </div>  
      
 	  <!-- Choose to upload or view transactions -->
@@ -25,7 +23,6 @@
 	
 	<!-- View Transactions -->
 	<div id="transactionGridDiv" ng-show="chosenToView" class="row row-buffer grid" ui-grid="transactionsGridOptions"/>
-	
 	
 		 
     <!-- Div for Uploading -->

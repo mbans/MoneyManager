@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.google.code.morphia.Key;
 import com.lumar.moneymanager.domain.Account;
-import com.lumar.moneymanager.domain.TransactionHeading;
 
 public interface AccountService {
 

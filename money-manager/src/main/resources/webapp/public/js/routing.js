@@ -16,6 +16,10 @@ moneyManagerApp.config(['$routeProvider',
 	      when('/', {
 	    	  templateUrl: 'partials/home.html',
 	      }).
+	      when('/rules', {
+	    	  templateUrl: 'partials/rules.html',
+	    	  controller: 'ruleController'
+	      }).
 	      when('/home', {
 	    	  templateUrl: 'partials/home.html',
 	      });

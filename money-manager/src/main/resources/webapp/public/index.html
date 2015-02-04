@@ -23,9 +23,12 @@
     <!-- Services -->
     <script src="js/controllers/transaction-controller.js"></script>
     <script src="js/services/transaction-service.js"></script>
-	<!-- Controllers -->
+    <script src="js/services/rule-service.js"></script>
+    
+    <!-- Controllers -->
     <script src="js/services/account-service.js"></script>
     <script src="js/controllers/account-controller.js"></script>
+    <script src="js/controllers/rule-controller.js"></script>
     <script src="js/routing.js"></script>
     
 </head>
@@ -50,7 +53,7 @@
 		</div>
 
 		<!-- Navigation -->
-		<div id="navDiv" class="row-fluid">
+		<div id="navDiv" class="row-fluid" ng-controller="accountController">
 					<ul class="nav nav-tabs nav-justified">
 						<li role="presentation"><a href="#home">
 							<img src="/img/home-small.png">Home</a>
@@ -60,17 +63,17 @@
 						<li role="presentation"><a href="#transactions">
 							<img src="/img/transactions-small.png">Transactions</a>
 						</li>
+						<li role="presentation"><a href="#rules">
+							<img src="/img/rules-small.png">Rules</a>
+						</li>
 						<li role="presentation"><a href="#analysis">
 							<img src="/img/analysis-pie-chart-small.png">
 							Analysis</a>
 						</li>
-						<li role="presentation"><a href="#rules">
-							<img src="/img/rules-small.png">Rules</a>
-						</li>
 						<li role="presentation"><a href="#about">
 							<img src="/img/info-small.png">About</a></li>
 						<li role="presentation"><a href="#logout">
-							<img src="/img/logout-small.png">Logout (USER)</a></li>
+							<img src="/img/logout-small.png">Logout({{user}})</a></li>
 					</ul>
 		</div>
 				

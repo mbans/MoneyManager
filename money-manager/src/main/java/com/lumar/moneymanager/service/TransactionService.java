@@ -1,13 +1,10 @@
 package com.lumar.moneymanager.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import com.lumar.moneymanager.domain.Account;
 import com.lumar.moneymanager.domain.Transaction;
-import com.lumar.moneymanager.domain._Transaction;
-import com.lumar.moneymanager.util.TransactionBatchUploadOutcome;
 
 public interface TransactionService {
 	

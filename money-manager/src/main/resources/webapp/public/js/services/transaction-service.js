@@ -9,8 +9,7 @@ app.service('transactionService', function($http) {
 		  			     {name: "Credit",mandatory:"false", type:"money"},
 		  			     {name: "Debit",mandatory:"false", type:"money"},
 		  			     {name: "Type",mandatory:"true", type:"money"},
-		  		         {name: "Balance", mandatory:"true", type:"money"},
-		  		         {name: "N/A", mandatory:"false", type:"string"}
+		  		         {name: "Balance", mandatory:"true", type:"money"}
 		  			    ];
 	this.transactionFieldMap={};
 	

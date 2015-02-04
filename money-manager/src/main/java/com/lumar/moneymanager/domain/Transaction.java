@@ -3,7 +3,7 @@ package com.lumar.moneymanager.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.bson.types.ObjectId;
+import org.joda.time.LocalDate;
 
 import com.google.code.morphia.annotations.Entity;
 
@@ -14,7 +14,7 @@ public class Transaction extends BaseEntity {
 	
 	private String accountName;
 	
-	private Date date;
+	private LocalDate date;
 	
 	private String type;
 	
@@ -30,7 +30,7 @@ public class Transaction extends BaseEntity {
 
 	public Transaction() {
 		accountName="";
-		date = new Date();
+		date = new LocalDate();
 		type="";
 		description="";
 	}
@@ -43,11 +43,11 @@ public class Transaction extends BaseEntity {
 		this.accountName = accountName;
 	}
 	
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 

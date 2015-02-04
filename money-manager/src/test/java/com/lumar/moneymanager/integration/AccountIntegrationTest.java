@@ -1,9 +1,6 @@
 package com.lumar.moneymanager.integration;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -19,17 +16,15 @@ import com.google.common.collect.Lists;
 import com.lumar.moneymanager.domain.Account;
 import com.lumar.moneymanager.domain.BigDecimalBigDecimalMorphiaConverter;
 import com.lumar.moneymanager.domain.Transaction;
-import com.lumar.moneymanager.domain.TransactionEntry;
 import com.lumar.moneymanager.domain.User;
-import com.lumar.moneymanager.domain._Transaction;
 import com.lumar.moneymanager.repo.AccountRepo;
 import com.lumar.moneymanager.repo.AccountRepoImpl;
 import com.lumar.moneymanager.service.AccountService;
 import com.lumar.moneymanager.service.AccountServiceImpl;
 import com.lumar.moneymanager.service.TransactionGenerator;
-import com.lumar.moneymanager.service.TransactionGenerator.TransactionHeadingDef;
 import com.lumar.moneymanager.service.TransactionService;
 import com.lumar.moneymanager.service.TransactionServiceImpl;
+import com.lumar.moneymanager.util.TransactionFieldConfig.TransactionField;
 import com.mongodb.Mongo;
 
 public class AccountIntegrationTest {
@@ -45,13 +40,13 @@ public class AccountIntegrationTest {
 	private static TransactionGenerator tranGen; 
 	
 	private static List<String> HEADINGS = Lists.asList(
-			TransactionHeadingDef.DATE.getName(),
+			TransactionField.DATE.getFieldName(),
 			new String[]{
-				TransactionHeadingDef.DESCRIPTION.getName(),
-				TransactionHeadingDef.TYPE.getName(),
-				TransactionHeadingDef.CREDIT.getName(),
-				TransactionHeadingDef.DEBIT.getName(),
-				TransactionHeadingDef.BALANCE.getName(),
+				TransactionField.DESCRIPTION.getFieldName(),
+				TransactionField.TYPE.getFieldName(),
+				TransactionField.CREDIT.getFieldName(),
+				TransactionField.DEBIT.getFieldName(),
+				TransactionField.BALANCE.getFieldName(),
 			}
 		);
 	
@@ -67,7 +62,7 @@ public class AccountIntegrationTest {
 		tranGen = new TransactionGenerator();
 		
 		ds = morphia.createDatastore("money-manager-test");
-		ds.delete(ds.createQuery(_Transaction.class));
+		ds.delete(ds.createQuery(Transaction.class));
 		ds.delete(ds.createQuery(Account.class));
 		System.out.println("All records should be deleted...");
 	}
@@ -87,7 +82,7 @@ public class AccountIntegrationTest {
 		account.setTransactionHeadingOrdering(HEADINGS);
 
 		//Construct acc+tran
-		String upload = "1	Desc	Type	-	12.00	$12.12";	
+		String upload = "22-Dec-13	Desc	Type	-	12.00	$12.12";	
 		Set<Transaction> transactions = tranGen.createTransactions(account, upload);
 		account.addTransactions(transactions);
 		accountService.saveAccount(account);
@@ -99,18 +94,18 @@ public class AccountIntegrationTest {
 		Assert.assertEquals(1, acc.getTransactions().size());
 	}
 	
-	
 	@Test 
 	public void shouldReturnDuplicateTransaction() {
 		//Create Account with one transaction
-		String upload = "22-Dec-83	Desc	Type	-	12.00	$12.12";	
+		String upload = "22-Dec-2005	Desc	Type	-	12.00	$12.12";	
 		Account account = createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab");
 		account.setTransactionHeadingOrdering(HEADINGS);
 		transactionService.uploadTransactions(account, upload);
 		
 		//Upload a duplicate
-		String newUpload = 	  "22-Dec-83	Desc	Type	-	12.00	$12.12\n"
-							+ "22-Jan-08	NewDesc	NewType	-	12.00	$12.12";
+		String newUpload = 	  "22-Dec-2005	Desc	Type	-	12.00	$12.12\n"
+							+ "22-Jan-2008	NewDesc	NewType	-	12.00	$12.12";
+		
 		List<String> dups = transactionService.uploadTransactions(account, newUpload);
 		
 		//Then - we should have one duplicate
@@ -144,24 +139,24 @@ public class AccountIntegrationTest {
 		Assert.assertEquals("New Bank", updatedAccount.getBank());
 	}
 	
-	@Test
-	public void shouldCreateTransaction() {
-		_Transaction transaction = new _Transaction("Acc1");
-		transaction.addTransactionEntry(new TransactionEntry<Date>("date", new Date()));
-		transaction.addTransactionEntry(new TransactionEntry<String>("type", "Debit"));
-		transaction.addTransactionEntry(new TransactionEntry<String>("desc", "Ted Baker Glasgow"));
-		transaction.addTransactionEntry(new TransactionEntry<Integer>("incoming", 0));
-		transaction.addTransactionEntry(new TransactionEntry<Integer>("outgoing", 12));
-		ds.save(transaction);
-		
-		//Retrieve
-		Query<_Transaction> query = ds.createQuery(_Transaction.class);
-		query.criteria("accountId").equal("Acc1");
-		
-		_Transaction tran = query.asList().get(0);
-				
-		Assert.assertEquals(tran.getTransactionEntries().size()+"", 5+"");
-	}
+//	@Test
+//	public void shouldCreateTransaction() {
+//		_Transaction transaction = new _Transaction("Acc1");
+//		transaction.addTransactionEntry(new TransactionEntry<Date>("date", new Date()));
+//		transaction.addTransactionEntry(new TransactionEntry<String>("type", "Debit"));
+//		transaction.addTransactionEntry(new TransactionEntry<String>("desc", "Ted Baker Glasgow"));
+//		transaction.addTransactionEntry(new TransactionEntry<Integer>("incoming", 0));
+//		transaction.addTransactionEntry(new TransactionEntry<Integer>("outgoing", 12));
+//		ds.save(transaction);
+//		
+//		//Retrieve
+//		Query<Transaction> query = ds.createQuery(Transaction.class);
+//		query.criteria("accountId").equal("Acc1");
+//		
+//		Transaction tran = query.asList().get(0);
+//				
+//		Assert.assertEquals(tran.getTransactionEntries().size()+"", 5+"");
+//	}
 	
 	@Test
 	public void shouldCreateAccount() {

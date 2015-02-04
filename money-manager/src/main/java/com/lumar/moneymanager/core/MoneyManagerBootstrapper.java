@@ -4,6 +4,8 @@ import static spark.SparkBase.externalStaticFileLocation;
 
 import com.lumar.moneymanager.rest.AccountRestService;
 
+import static spark.SparkBase.setPort;
+
 public class MoneyManagerBootstrapper {
 
 	// TODO: Replace with a property
@@ -18,6 +20,7 @@ public class MoneyManagerBootstrapper {
 	}
 
 	private void init() {
+		setPort(5678);
 		if(System.getProperty("os.name").startsWith("Windows")) {
 			externalStaticFileLocation(WEBAPP_LOC_WIND);
 		}

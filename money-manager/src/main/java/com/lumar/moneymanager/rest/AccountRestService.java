@@ -16,10 +16,15 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.lumar.moneymanager.domain.Account;
+import com.lumar.moneymanager.domain.Rule;
 import com.lumar.moneymanager.repo.AccountRepo;
 import com.lumar.moneymanager.repo.AccountRepoImpl;
+import com.lumar.moneymanager.repo.RuleRepo;
+import com.lumar.moneymanager.repo.RuleRepoImpl;
 import com.lumar.moneymanager.service.AccountService;
 import com.lumar.moneymanager.service.AccountServiceImpl;
+import com.lumar.moneymanager.service.RuleService;
+import com.lumar.moneymanager.service.RuleServiceImpl;
 import com.lumar.moneymanager.service.TransactionService;
 import com.lumar.moneymanager.service.TransactionServiceImpl;
 
@@ -27,15 +32,19 @@ public class AccountRestService {
 	
 	private AccountService accountService;
 	private TransactionService transactionService;
+	private RuleService ruleService;
 
 	private static Logger LOG = LoggerFactory.getLogger(AccountRestService.class);
 	
 	public AccountRestService(String databaseName) {
-		AccountRepo accountRepo = null;
-		accountRepo = new AccountRepoImpl(databaseName);
+		AccountRepo  accountRepo = new AccountRepoImpl(databaseName);
+		RuleRepo ruleRepo = new RuleRepoImpl(databaseName);
+		
 		this.accountService = new AccountServiceImpl(accountRepo);
 		this.transactionService = new TransactionServiceImpl(accountRepo);
+		this.ruleService = new RuleServiceImpl(ruleRepo);
 	}
+	
 	
 	public void init() {
 		
@@ -119,6 +128,33 @@ public class AccountRestService {
 			List<String> duplicates = transactionService.uploadTransactions(account, transactions);
 			LOG.info("Uploaded " + (transactions.size()-duplicates.size()) + " transactions, "+ duplicates.size() + " duplicates detected");
 			return new Gson().toJson(duplicates);
+		});
+			
+		/**
+		 * Rules
+		 */
+		post("/rules/", (req,res) -> {
+			//Raw content
+			JSONObject obj = new JSONObject(req.body());
+			String user = obj.getString("user");
+			JSONArray rulesArray = obj.getJSONArray("rules");
+
+			LOG.info("Recieved Rules", rulesArray);
+			List<Rule> rules=Lists.newArrayList();
+			Gson g = new Gson();
+			for(int i=0; i<rulesArray.length(); i++) {
+				rules.add(g.fromJson(rulesArray.get(i).toString(), Rule.class));
+			}
+			ruleService.saveRules(user, rules);
+			return true;
+		});
+		
+		/**
+		 * Retrieve rules for the given user
+		 */
+		get("/rules/:user",(req,res) -> {
+			String user = req.params("user");
+			return new Gson().toJson(ruleService.getRules(user));
 		});
 	}
 }

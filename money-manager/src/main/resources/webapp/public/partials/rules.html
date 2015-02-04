@@ -1,0 +1,91 @@
+<div class="container-fluid">
+	
+	<!-- View Details of Rule -->
+	
+	<div class="row">
+	
+		<div id="formContainer1" class="row-fluid col-md-offset-1  col-md-10">
+			<h3>
+				<center>
+					<label ng-if="userRules.length > 0">Your rules</label> 
+					<label ng-if="userRules.length==0">You currently do not have any rules defined</label> 
+					<br ng-if="userRules.length==0">
+ 					<a><img ng-if="userRules.length==0"  src="img/add-icon-lg.png" ng-click="addNewRuleEntry()" title="Create Your Fist Rule"></a>
+				</center>
+			</h3>
+			<form name="ruleForm" class="form-inline" role="form" novalidate>
+			
+				  <!-- Use a subForm that allows us to individually reference each input, otherwise validation logic get applied to all 'names', 'field' etc
+				  	   i.e. if one 'name' input is invalid then all would be highlighted as invalid
+				   -->
+	 			  <div class="row row-buffer col-md-12" ng-repeat="rule in userRules track by $index" ng-form="subForm">
+						
+					<!-- Name -->
+		 			  <div class="form-group col-md-2" ng-class="{ 'has-error' : subForm.name.$invalid && !subForm.name.$pristine}">
+								<input name="name" type="text" class="form-control" ng-model="rule.name"  placeholder="Rule Name" required>
+									<p ng-show="subForm.name.$invalid && !subForm.name.$pristine"
+									class="help-block">Rule Name is required</p>
+					  </div>
+	
+					<!-- Field  -->
+					<div class="form-group col-md-2"ng-class="{'has-error': subForm.field.$invalid && !subForm.field.$pristine}">
+						<select name="field"class="dropdown form-control" ng-model="rule.field">
+							<option ng-repeat="fieldName in ruleService.fieldNames">{{fieldName.name}}</option>
+						</select>
+						<p ng-show="subForm.field.$invalid && !subForm.field.$pristine" class="help-block">Field Name is required</p>
+					</div>
+					
+					<!-- Operator -->
+					<div class="form-group col-md-2" ng-class="{'has-error': subForm.operator.$invalid && !subForm.operator.$pristine}">
+						<select class="dropdown form-control" ng-model="rule.operator">
+							<option ng-repeat="operator in ruleService.getOperators(rule.field)">{{operator}}</option>
+						</select>	
+						<p ng-show="subForm.operator.$invalid && !subForm.operator.$pristine" class="help-block">Operator is required</p>
+					</div>
+	
+					<!-- Value -->
+		 			  <div class="form-group col-md-2" ng-class="{ 'has-error' : subForm.value.$invalid && !subForm.value.$pristine}">
+								<input name="value" type="text" class="form-control" ng-model="rule.value"  placeholder="Value" required>
+									<p ng-show="subForm.value.$invalid && !subForm.value.$pristine"
+									class="help-block">Value is required</p>
+					  </div>
+
+	
+					<!-- Category -->
+		 			  <div class="form-group col-md-2" ng-class="{ 'has-error' : subForm.category.$invalid && !subForm.category.$pristine}">
+								<input name="category" type="text" class="form-control" ng-model="rule.category"  placeholder="Category" required>
+									<p ng-show="subForm.category.$invalid && !subForm.category.$pristine"
+									class="help-block">Category is required</p>
+					  </div>
+
+					<!-- Delete -->
+					<div class="form-group col-md-2">
+							<img  ng-click="deleteRule($index)" src="img/delete-icon-med.png" title="Delete Rule">
+							<img ng-if="$index == (userRules.length-1)" ng-click="addNewRuleEntry()" src="img/add-icon-med.png" title="Add Rule">
+					</div>
+   			</div>
+ 				
+ 			<div class="row row-buffer col-md-12">
+ 					<center>
+ 					  <button ng-if="userRules.length > 0"
+ 					  		  type="submit" 
+ 					  		  class="btn btn-default btn-med" 
+ 					  		  title="Save"
+ 					  		  ng-click="saveRules()"
+ 					  		  ng-disabled="ruleForm.$invalid">
+ 					  		  		  <img src="img/save-med.png">
+ 					  </button>
+ 					  		   
+ 					  <button ng-if="userRules.length > 0"
+ 					  		  class="btn btn-default btn-med" 
+ 					  		  ng-click="getUserRules()"
+					  		  title="Refesh">
+					  		  <img src="img/refresh-med.png">
+ 					 	</button>
+ 					 </center>
+			</div> <!-- Buttons -->	
+					
+ 			</form>
+		</div>			
+	</div>
+</div>

@@ -2,7 +2,7 @@
 	
 	<!-- View Details of Selected Account -->
 	<div class="row" ng-show="accountIsLoaded || newAccountChosen">
-		<div id="formContainer" class="row col-md-offset-4  col-md-4">
+		<div id="formContainer" class="row col-md-offset-3  col-md-6">
 			<form class="form-horizontal" name="accountForm"  role="form" novalidate>
 
 				<!-- AccountName -->
@@ -24,8 +24,8 @@
 					<p
 						ng-show="accountForm.bank.$invalid && !accountForm.bank.$pristine"
 						class="help-block">Bank is required.</p>
-				</div>
 
+				</div>
 				<!-- Account Num -->
 				<div class="form-group"
 					ng-class="{'has-error': accountForm.accountNum.$invalid && !accountForm.accountNum.$pristine}">
@@ -59,22 +59,23 @@
 				</div>
 
 				<!-- Transaction Headings -->
-				<div
-					ng-hide="account.sampleTransaction=='' || account.sampleTransaction=='undefined'"
-					class="form-group">
+				<div ng-hide="account.sampleTransaction=='' || account.sampleTransaction=='undefined'" class="form-group">
 
-					<div class="row" ng-repeat="sampleTranEntry in sampleTransactionEntries track by $index">
-						<div class="col-md-5">
+					<div class="row col-md-12" ng-repeat="sampleTranEntry in sampleTransactionEntries track by $index">
+						
+						<!-- Tran Field Value -->
+						<div class="col-md-4">
 							<label>{{getSmallVersion(sampleTranEntry)}}</label>
 						</div>
-						<div class="col-md-3">
+						
+						<!-- maps to -->
+						<div class="col-md-2">
 							<label> maps to </label>
 						</div>
 
-						<div class="row col-md-3">
+						<div class="col-md-3">
+							<select class="form-control" ng-model="account.transactionHeadingOrdering[$index]">				
 
-							<select ng-model="account.transactionHeadingOrdering[$index]">
-								<!-- We add the currently selected item -->
  								<option ng-if="account.transactionHeadingOrdering[$index] != '' || account.transactionHeadingOrdering[$index] != undefined" selected="selected">
 									{{account.transactionHeadingOrdering[$index]}}
 								</option>
@@ -82,11 +83,20 @@
 								<option ng-repeat="transactionHeading in transactionFieldHeadings">
  									{{transactionHeading.name.trim()}}
 								</option>
-								
-							</select>
+							</select>	
 						</div>
-					</div>
-				</div>
+
+						<div ng-if="account.transactionHeadingOrdering[$index].trim() == 'Date'" class="col-md-3">
+							<select class="form-control" ng-model="account.dateFormat">				
+ 								<option>dd-MM-yyyy</option>
+ 								<option>dd/MM/yyyy</option>
+ 								<option>dd-MMM-yyyy</option>
+ 								<option>dd/MMM/yyyy</option>
+							</select>	
+						</div>
+						{{account.dateFormat}}
+					</div> 
+				</div> <!-- Transaction Headings -->
 
 				<div class="row form-group col-md-12">
 						<div class="btn-group">

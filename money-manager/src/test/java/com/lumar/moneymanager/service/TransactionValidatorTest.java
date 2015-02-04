@@ -1,14 +1,8 @@
 package com.lumar.moneymanager.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TransactionValidatorTest {
-
+/*
 	private TransactionValidator validator = new TransactionValidator();
 	private static List<String> HEADINGS = new ArrayList<String>();
 	
@@ -36,6 +30,5 @@ public class TransactionValidatorTest {
 						  .equals("1-Dec-1983	POS	Ted Baker	-	12.00"));
 		
 	}
-	
-	
+*/	
 }

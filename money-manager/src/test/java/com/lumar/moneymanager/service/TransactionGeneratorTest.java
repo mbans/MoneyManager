@@ -1,9 +1,7 @@
 package com.lumar.moneymanager.service;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +12,7 @@ import org.junit.Test;
 import com.lumar.moneymanager.domain.Account;
 import com.lumar.moneymanager.domain.Transaction;
 import com.lumar.moneymanager.integration.AccountIntegrationTest;
-import com.lumar.moneymanager.service.TransactionGenerator.TransactionHeadingDef;
+import com.lumar.moneymanager.util.TransactionFieldConfig.TransactionField;
 
 
 public class TransactionGeneratorTest {
@@ -22,12 +20,12 @@ public class TransactionGeneratorTest {
 	private TransactionGenerator tranGen = new TransactionGenerator();
 	
 	private static List<String> tranCols = new ArrayList<String>(){{
-		add(TransactionHeadingDef.DATE.getName()); 
-		add(TransactionHeadingDef.TYPE.getName()); 
-		add(TransactionHeadingDef.DESCRIPTION.getName()); 
-		add(TransactionHeadingDef.CREDIT.getName());
-		add(TransactionHeadingDef.DEBIT.getName());
-		add(TransactionHeadingDef.BALANCE.getName());
+		add(TransactionField.DATE.getFieldName()); 
+		add(TransactionField.TYPE.getFieldName()); 
+		add(TransactionField.DESCRIPTION.getFieldName()); 
+		add(TransactionField.CREDIT.getFieldName());
+		add(TransactionField.DEBIT.getFieldName());
+		add(TransactionField.BALANCE.getFieldName());
 	}};
 	
 
@@ -37,8 +35,8 @@ public class TransactionGeneratorTest {
 		
 		account.setTransactionHeadingOrdering(tranCols);
 		
-		String rawTransactionUpload="22-Dec-83	POS	TedBaker	12.00	-	£1212.00\n"+
-									"26-Jan-99	ATM	Tesco	-	12.09	£112.00";
+		String rawTransactionUpload="22-Dec-2015	POS	TedBaker	12.00	-	£1212.00\n"+
+									"26-Jan-2014	ATM	Tesco	-	12.09	£112.00";
 		
 		//When
 		Set<Transaction> trans = tranGen.createTransactions(account, rawTransactionUpload);

@@ -70,9 +70,8 @@ module.controller('transactionController',  function ($scope, uiGridConstants, t
 				$scope.uploadOutcome.uploadedCount = $scope.rawValidTransactions.length  - duplicates.length;
 				$scope.uploadOutcome.duplicates = duplicates;
 			},
-			function(esponse) {
-				data = response.data;
-				bootbox.alert("Error uploading transactions, please attempt to reupload" + errorMessage);
+			function() {
+				bootbox.alert("Error uploading transactions, please attempt to reupload");
 			}
 		);
   }
@@ -194,10 +193,18 @@ module.controller('transactionController',  function ($scope, uiGridConstants, t
 	    		 		condition: uiGridConstants.filter.LESS_THAN,
 	             		placeholder: 'less than'
 	           		  }]
+    	    	 },
+    	    	 
+    	    	 { 
+    	    	   field: 'category', 
+        	       enableHiding: true,
+      	    	   displayName: 'Category',
+      	    	   filter: {
+    	             condition: uiGridConstants.filter.CONTAINS,
+    	             placeholder: 'contains'
+    	           }
     	    	 }
     	       ],
-    	       
-    	       
     	    enableFiltering:true,
     	    enableHorizontalScrollbar: 2, 	//When needed
     		enableVerticalScrollbar: 2, 	//When needed

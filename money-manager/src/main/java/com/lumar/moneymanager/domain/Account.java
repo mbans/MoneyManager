@@ -16,11 +16,11 @@ public class Account extends BaseEntity {
 	private String sortCode;
 	private String accountOwner; // the username for user
     private String sampleTransaction; 
-    
     private Set<Transaction> transactions;
     
 	//Related to the parsing of the account - maybe stored in seperate object?
 	private List<String> transactionHeadingOrdering;
+	private String dateFormat; 
     private String delimiter; 
 		
 	public Account() {
