@@ -115,4 +115,12 @@ public class Account extends BaseEntity {
 	public void addTransaction(Transaction transaction) {
 		transactions.add(transaction);
 	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
 }

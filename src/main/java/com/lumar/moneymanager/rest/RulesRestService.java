@@ -1,9 +1,9 @@
 package com.lumar.moneymanager.rest;
 
-import static spark.Spark.get;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 
 public class RulesRestService {
 	
@@ -11,10 +11,10 @@ public class RulesRestService {
 	
 	public RulesRestService(String databaseName) {
 	}
-	
+
 	public void init() {
-		
-		get("/api/rules/", (req, res) -> {
+
+		Spark.get("/api/rules/", (req, res) -> {
 			LOG.info("Test");
 			return "bla";
 		});

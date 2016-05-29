@@ -28,6 +28,8 @@ public class Transaction extends BaseEntity {
 	
 	private BigDecimal runningBalance = ZERO_BALANCE;
 
+	private String dateFormat;
+
 	public Transaction() {
 		accountName="";
 		date = new LocalDate();
@@ -98,7 +100,15 @@ public class Transaction extends BaseEntity {
 	public void setRunningBalance(BigDecimal runningBalance) {
 		this.runningBalance = runningBalance;
 	}
-	
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null) {
@@ -112,8 +122,8 @@ public class Transaction extends BaseEntity {
 				tran.getDebit().equals(this.getDebit()) && 
 				tran.getDescription().equals(this.getDescription()) && 
 				tran.getRunningBalance().equals(this.getRunningBalance()) && 
-				tran.getAccountName().equals(this.getAccountName()) &&
-				tran.getDate().equals(this.getDate());
+				tran.getAccountName().equals(this.getAccountName());
+//				&& tran.getDate().equals(this.getDate()
 	}
 	
 	public int hashCode() {
@@ -123,8 +133,8 @@ public class Transaction extends BaseEntity {
 			this.getDebit().hashCode() + 
 			this.getDescription().hashCode() +
 			this.getRunningBalance().hashCode() +
-			this.getAccountName().hashCode() + 
-			this.getDate().hashCode();
+			this.getAccountName().hashCode();
+//			+ this.getDate().hashCode();
 
 	}
 }

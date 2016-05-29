@@ -13,19 +13,15 @@ public interface AccountService {
 			 String bank, 
 			 String accountNum, 
 			 String sortCode,
+			 String dateFormat,
 			 String sampleTransaction,
 			 List<String> headings);
 	
-	public Key<Account> saveAccount(Account account);
+	Key<Account> saveAccount(Account account);
 	
-	public Key<Account> updateAccount(Account account);
+	Key<Account> updateAccount(Account account);
 
-	/**
-	 * Retrieves the accounts for the given user
-	 * @param username
-	 * @return
-	 */
-	public Set<Account> getAccountsForUser(String owner);
+	Set<Account> getAccountsForUser(String owner);
 	
 	/**
 	 * Retrieves the account by owner and account name
@@ -33,11 +29,11 @@ public interface AccountService {
 	 * @param accountName
 	 * @return
 	 */
-	public Account getAccountByOwnerAndName(String owner, String accountName);
+	Account getAccountByOwnerAndName(String owner, String accountName);
 	
 	/**
 	 * Deletes the given account
 	 * @param account
 	 */
-	public void delete(Account account);
+	void delete(Account account);
 }

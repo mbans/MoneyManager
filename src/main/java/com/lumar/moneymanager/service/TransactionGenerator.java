@@ -16,12 +16,11 @@ import com.lumar.moneymanager.util.TransactionFieldConfig.TransactionField;
 public class TransactionGenerator {
 			
 	public Set<Transaction> createTransactions(Account account, List<String> transactions) {
-		List<String> headings = account.getTransactionHeadingOrdering();
-		Set<Transaction> toReturn = new HashSet<Transaction>(); 
+		Set<Transaction> toReturn = new HashSet<>();
 		
 		for(String transaction : transactions) {
 			String[] transactionValues = transaction.split(account.getDelimiter());
-			Transaction tran = createTransaction(transactionValues , headings); 
+			Transaction tran = createTransaction(transactionValues, account);
 			toReturn.add(tran);
 		}
 		return toReturn;
@@ -44,7 +43,7 @@ public class TransactionGenerator {
 	
 	private Transaction createTransaction(Account account, String transactionStr) {
 		String[] transactionValues = transactionStr.split(account.getDelimiter());
-		return createTransaction(transactionValues , account.getTransactionHeadingOrdering()); 
+		return createTransaction(transactionValues , account);
 	}
 	
 	/**
@@ -68,34 +67,24 @@ public class TransactionGenerator {
 		tran.setAmount(amount);
 	}
 
-	/**
-	 * Creates a single Transaction
-	 * @param tran
-	 * @param headings
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
-	protected Transaction createTransaction(String[] transactionValues, List<String> headingNamesForAccount) {
+	protected Transaction createTransaction(String[] transactionValues, Account account) {
+
 		Transaction tran = new Transaction();
+		tran.setDateFormat(account.getDateFormat());
 
 		for(int i=0; i < transactionValues.length; i++) {
-			String headingName=headingNamesForAccount.get(i);
+			String headingName=account.getTransactionHeadingOrdering().get(i);
 			String tranFieldValue=transactionValues[i];
 			
 			TransactionField headingDefinition = TransactionField.getFromFieldName(headingName);
 			
-			//Assigns the value to the given transaction, including all required casting
 			headingDefinition.assignToTran(tran, tranFieldValue);
 		}
 		setAmount(tran);
 		return tran;
 	}
-	
-	/**
-	 * @param account
-	 * @param rawTransactionUpload
-	 * @return
-	 */
+
 	public Set<Transaction> createTransactions(Account account, String rawTransactionUpload) {
 		List<String> transactions = Arrays.asList(rawTransactionUpload.split("\n"));
 		return createTransactions(account,transactions);

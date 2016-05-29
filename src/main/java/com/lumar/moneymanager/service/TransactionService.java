@@ -10,25 +10,16 @@ public interface TransactionService {
 	
 	/**
 	 * Uploads the given transactions to the specified account.
-	 * @param account
-	 * @param rawTransactionUpload
-	 * @return - duplicate transaction rows
 	 */
-	public List<String> uploadTransactions(Account account, String rawTransactionUpload);
+	List<String> uploadTransactions(Account account, String rawTransactionUpload);
 
 	/**
 	 * Upload the given transactions to the specified account.
-	 * @param account
-	 * @param transactionsToUpload
-	 * @return
 	 */
-	public List<String> uploadTransactions(Account account, List<String> transactionsToUpload);
+	List<String> uploadTransactions(Account account, List<String> transactionsToUpload);
 	
 	/**
 	 * Retrieve all transactions for the given account
-	 * @param accountOwner
-	 * @param accountName
-	 * @return
 	 */
-	public Set<Transaction> getTransactions(Account account);
+	Set<Transaction> getTransactions(Account account);
 }

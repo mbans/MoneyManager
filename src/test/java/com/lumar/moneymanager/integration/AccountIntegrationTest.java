@@ -78,7 +78,7 @@ public class AccountIntegrationTest {
 	@Test
 	public void shouldCreateAccountWithTransaction() {
 		//Given
-		Account account = createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab");
+		Account account = createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab", "dd-MMM-yyyy");
 		account.setTransactionHeadingOrdering(HEADINGS);
 
 		//Construct acc+tran
@@ -98,7 +98,7 @@ public class AccountIntegrationTest {
 	public void shouldReturnDuplicateTransaction() {
 		//Create Account with one transaction
 		String upload = "22-Dec-2005	Desc	Type	-	12.00	$12.12";	
-		Account account = createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab");
+		Account account = createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab", "dd-MMM-yyyy");
 		account.setTransactionHeadingOrdering(HEADINGS);
 		transactionService.uploadTransactions(account, upload);
 		
@@ -115,7 +115,7 @@ public class AccountIntegrationTest {
 	
 	@Test
 	public void shouldDeleteAccount() {
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", "dd-MMM-yyyy", null, new ArrayList<>());
 		Account account=accountService.getAccountByOwnerAndName("martinbans", "Martin-RBS");
 		Assert.assertTrue(account != null);
 		
@@ -127,7 +127,7 @@ public class AccountIntegrationTest {
 	@Test
 	public void shouldUpdateAccount() {
 		
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", "dd-MMM-yyyy", null, new ArrayList<>());
 		Account account = accountService.getAccountByOwnerAndName("martinbans", "Martin-RBS");
 		account.setBank("New Bank");
 		
@@ -138,32 +138,13 @@ public class AccountIntegrationTest {
 		Account updatedAccount=accountService.getAccountByOwnerAndName("martinbans", "Martin-RBS");
 		Assert.assertEquals("New Bank", updatedAccount.getBank());
 	}
-	
-//	@Test
-//	public void shouldCreateTransaction() {
-//		_Transaction transaction = new _Transaction("Acc1");
-//		transaction.addTransactionEntry(new TransactionEntry<Date>("date", new Date()));
-//		transaction.addTransactionEntry(new TransactionEntry<String>("type", "Debit"));
-//		transaction.addTransactionEntry(new TransactionEntry<String>("desc", "Ted Baker Glasgow"));
-//		transaction.addTransactionEntry(new TransactionEntry<Integer>("incoming", 0));
-//		transaction.addTransactionEntry(new TransactionEntry<Integer>("outgoing", 12));
-//		ds.save(transaction);
-//		
-//		//Retrieve
-//		Query<Transaction> query = ds.createQuery(Transaction.class);
-//		query.criteria("accountId").equal("Acc1");
-//		
-//		Transaction tran = query.asList().get(0);
-//				
-//		Assert.assertEquals(tran.getTransactionEntries().size()+"", 5+"");
-//	}
-	
+
 	@Test
 	public void shouldCreateAccount() {
 		List<String> headings = new ArrayList<String>();
 		headings.add("date");
 		headings.add("description");
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "123456", SAMPLE_TRANSACTION, headings);
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "123456","dd-MMM-yyyy", SAMPLE_TRANSACTION, headings);
 		
 		//Retrieve
 		Query<Account> query = ds.createQuery(Account.class);
@@ -177,8 +158,8 @@ public class AccountIntegrationTest {
 	@Test
 	public void shouldGetAccountByUsername() {
 		//Given
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
-		accountService.createAccount("martinbans", "Martin-Natwest", "RBS", "0012345678", "123456", null, new ArrayList<String>());
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", "dd-MMM-yyyy", null, new ArrayList<>());
+		accountService.createAccount("martinbans", "Martin-Natwest", "RBS", "0012345678", "123456", "dd-MMM-yyyy", null, new ArrayList<>());
 		
 		//When
 		Set<Account> accounts = accountService.getAccountsForUser("martinbans");
@@ -189,7 +170,7 @@ public class AccountIntegrationTest {
 	
 	@Test
 	public void shouldGetAccountByAccountName() {
-		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", null, new ArrayList<String>());
+		accountService.createAccount("martinbans", "Martin-RBS", "RBS", "0012345678", "", "dd-MMM-yyyy", null, new ArrayList<String>());
 		Account account = accountService.getAccountByOwnerAndName("martinbans", "Martin-RBS");
 		Assert.assertTrue("martinbans".equals(account.getAccountOwner()));
 	}
@@ -215,21 +196,8 @@ public class AccountIntegrationTest {
 		ds.save(user);		
 		return user;
 	}
-	
-//	private Transaction createTransaction(String name, String desc, String type,  BigDecimal credit, BigDecimal debit, BigDecimal balance, BigDecimal amount) {
-//		Transaction
-//		Transaction t = new Transaction();
-//		t.setAccountName(name);
-//		t.setDescription(desc);
-//		t.setType(type);
-//		t.setAmount(amount.setScale(2, RoundingMode.CEILING));
-//		t.setCredit(credit.setScale(2, RoundingMode.CEILING));
-//		t.setDebit(debit.setScale(2, RoundingMode.CEILING));
-//		t.setRunningBalance(balance.setScale(2, RoundingMode.CEILING));
-//		return t;
-//	}
 
-	public static Account createAccount(String owner, String name, String accountNum, String sortCode, String bank, String delimiter) {
+	public static Account createAccount(String owner, String name, String accountNum, String sortCode, String bank, String delimiter, String dateFormat) {
 		Account a = new Account();
 		a.setAccountOwner(owner);
 		a.setName(name);
@@ -237,6 +205,7 @@ public class AccountIntegrationTest {
 		a.setSortCode(sortCode);
 		a.setBank(bank);
 		a.setDelimiter(delimiter);
+		a.setDateFormat(dateFormat);
 		return a;
 	}
 }

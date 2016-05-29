@@ -1,11 +1,14 @@
 package com.lumar.moneymanager.util;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
@@ -26,19 +29,11 @@ public class TransactionFieldConfig {
 				@Override
 				public void assignToTran(Transaction tran, String rawValue) {
 					try {
-						DateTimeFormatter dtf = new DateTimeFormatterBuilder()
-					    .appendDayOfMonth(2)
-					    .appendLiteral('-')
-					    .appendMonthOfYearShortText()
-					    .appendLiteral('-')
-					    .appendYear(2,4)
-					    .toFormatter().withLocale(Locale.UK);
-						
-						LocalDate date = dtf.parseLocalDate(rawValue);
-						tran.setDate(date);
+						final DateTimeFormatter dtf = DateTimeFormat.forPattern(tran.getDateFormat());
+						tran.setDate(dtf.parseLocalDate(rawValue.trim()));
 					}
 					catch(Exception e) {
-						throw new RuntimeException("Could not convert Date["+rawValue+"] must be in format dd-MMM-yy");	
+						throw new RuntimeException("Could not convert Date["+rawValue+"] expected format ["+tran.getDateFormat()+"], Exception="+e.getMessage());
 					}
 				}
 		},
@@ -241,9 +236,6 @@ public class TransactionFieldConfig {
 		
 		/**
 		 * Returns true if the given rule is applicable for the value (derived from a transaction), works by applying the logic for the given operator on the arguments
-		 * @param value
-		 * @param rule
-		 * @return
 		 */
 		public abstract boolean matches(Object transactionFieldValue, Rule rule);
  
@@ -294,19 +286,4 @@ public class TransactionFieldConfig {
 			return null;
 		}
 	}
-	
-/*	public static BigDecimal convertToBd(Object o) {
-			if(o instanceof String) {
-				if((String)o).))
-					return new BigDecimal
-				
-				//match a number with optional '-' and decimal.
-			}
-			
-			if(o instanceof BigDecimal) {
-				return true
-			}
-				
-		}
-*/	
 }

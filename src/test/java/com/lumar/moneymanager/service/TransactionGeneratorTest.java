@@ -31,12 +31,12 @@ public class TransactionGeneratorTest {
 
 	@Test
 	public void shouldCreateTransaction() {
-		Account account = AccountIntegrationTest.createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab");
+		Account account = AccountIntegrationTest.createAccount("martin", "martin-rbs","123456", "789", "RBS", "Tab", "dd-MMM-yyyy");
 		
 		account.setTransactionHeadingOrdering(tranCols);
 		
-		String rawTransactionUpload="22-Dec-2015	POS	TedBaker	12.00	-	£1212.00\n"+
-									"26-Jan-2014	ATM	Tesco	-	12.09	£112.00";
+		String rawTransactionUpload="22-Dec-2015	POS	TedBaker	12.00	-	1212.00\n"+
+									"26-Jan-2014	ATM	Tesco	-	12.09	112.00";
 		
 		//When
 		Set<Transaction> trans = tranGen.createTransactions(account, rawTransactionUpload);

@@ -1,4 +1,4 @@
-package com.lumar.moneymanager.core;
+package com.lumar.moneymanager;
 
 import static spark.SparkBase.externalStaticFileLocation;
 
@@ -10,7 +10,8 @@ public class MoneyManagerBootstrapper {
 
 	// TODO: Replace with a property
 	private static String WEBAPP_LOC_WIND = "C:\\Users\\Martin\\git\\LumarProjects\\money-manager\\src\\main\\resources\\webapp\\public\\";
-	private static String WEBAPP_LOC_UNIX = "/Users/LumarMacy/git/LumarProjects/money-manager/src/main/resources/webapp/public";
+//	private static String WEBAPP_LOC_UNIX = "/Users/LumarMacy/git/LumarProjects/money-manager/src/main/resources/webapp/public";
+	private static String WEBAPP_LOC_UNIX = "/Users/lumarmacy1/dev/git/MoneyManager/src/main/resources/webapp/public";
 	private static String DATABASE_NAME = "money-manager";
 	private AccountRestService restService;
 	

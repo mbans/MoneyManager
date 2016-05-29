@@ -58,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
 								 String bank, 
 								 String accountNum, 
 								 String sortCode,
+								 String dateFormat,
 								 String sampleTransaction,
 								 List<String> headings) {
 		
@@ -70,6 +71,7 @@ public class AccountServiceImpl implements AccountService {
 		account.setBank(bank);
 		account.setAccountNum(accountNum);
 		account.setSortCode(sortCode);
+		account.setDateFormat(dateFormat);
 		account.setTransactionHeadingOrdering(headings);
 		return accountRepo.saveAccount(account);
 	}
